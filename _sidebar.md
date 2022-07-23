@@ -4,6 +4,7 @@
     - [排序算法_参考文献](note/排序算法_参考文献.md)
     - [transformer](note/transformer.md)
     - [概率分布](note/常见概率分布.md)
+    - [常见数据集](note/常见数据集.md)
     - [激活函数](note/激活函数.md)
     - [优化算法](note/优化算法.md)
     - [损失函数](note/损失函数.md)
