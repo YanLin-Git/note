@@ -3,7 +3,7 @@
 2. 也可以下载到本地，启动服务
     1. 本地安装python3
     2. clone本仓库 `git clone https://github.com/yanlinnn/note.git`
-    3. 进入文件目录，执行`sh start_docify.sh`
+    3. 进入文件目录，执行`sh start_docsify.sh`
     4. 浏览器中输入`http://localhost:3000/#/`
 
 - **非常实用的网站**:

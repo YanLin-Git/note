@@ -69,6 +69,7 @@ $$
 \bar x, \overline{AB}
 $$
 ![我的图片](jpegs/标注符号.jpeg)
+
 ## 七、箭头
 $$
 \leftarrow,\rightarrow,\Rightarrow,\Leftrightarrow
