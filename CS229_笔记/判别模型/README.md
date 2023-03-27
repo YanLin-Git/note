@@ -9,10 +9,9 @@ graph LR
     F[分类问题] --- two[二分类] & multi[多分类]
     H -.- linear[/1.1 线性回归/]
     two -.- L[/1.2 逻辑回归/]
-    two --- G[2 感知机] & Z[3 最大熵模型] & SVM[4 SVM]
+    two --- G[2 感知机] & SVM[3 SVM] & Z[4 最大熵模型]
     multi -.- S[/1.3 softmax/]
     X --- CRF[5 CRF]
 
     linear & L & S -.- T[1 广义线性模型]
-
 ```
