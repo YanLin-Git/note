@@ -27,7 +27,7 @@ $$
 #### 1.2 最大间隔分离超平面
 在**感知机**中，我们只要求 对于一个线性可分的数据集，找到可将其分开的一个**分离超平面**  
 **SVM**中，不仅想要正确划分，还想要**几何间隔**最大  
-##### 用数学公式表示出来就是：
+**用数学公式表示出来就是**:  
 
 $$
 \begin{aligned}
@@ -47,7 +47,7 @@ $$
     y^{(i)}(w^Tx^{(i)}+b) \geq ||w|| \gamma =  \hat{\gamma},\quad i=1,...,m
 $$
 
-##### 因此我们又可以表述为:
+**因此我们又可以表述为**:  
 
 $$
 \begin{aligned}
@@ -72,7 +72,7 @@ $$
 > (3')(4')式，式在参数空间(w',b')，也即(2w,2b)中寻找最优解  
 > - 两者是完全等价的
 
-##### 不妨令$\hat{\gamma}=1$，就将问题表述为:
+**不妨令$\hat{\gamma}=1$，就将问题表述为**:  
 $$
 \begin{aligned}
     & max_{w,b} \quad \quad \frac 1 {||w||} & (1'')\\
@@ -80,7 +80,7 @@ $$
 \end{aligned}
 $$
 
-##### 最终形式
+**最终形式**:  
 更进一步，求解 $max_{w,b} \quad \frac 1 {||w||}$ 与 求解 $min_{w,b} \quad \frac 1 2 ||w||^2$是等价的  
 所以也可以这样表述:  
 $$
@@ -101,24 +101,24 @@ $$L(w,b,\alpha) = \frac 1 2 {||w||^2} + \sum\limits_{i=1}^m \alpha_i  (1 - y^{(i
 我们在上一节中要求解的目标，相当于求解: $min_{w,b} \quad max_\alpha \quad L(w,b,\alpha)$
 
 #### 2.2 对偶问题
-原始问题: 求解$min_{w,b} \quad max_\alpha \quad L(w,b,\alpha)$  
-可以转化为 求解其对偶问题: $max_\alpha \quad min_{w,b} \quad L(w,b,\alpha)$  
+**原始问题**: 求解$min_{w,b} \quad max_\alpha \quad L(w,b,\alpha)$  
+可以转化为 求解其**对偶问题**: $max_\alpha \quad min_{w,b} \quad L(w,b,\alpha)$  
 > 这里需要参考**拉格朗日对偶性**
 
-##### 求解过程:
+**求解过程**:  
 1. 先求解 $min_{w,b} \quad L(w,b,\alpha)$
 
 $$
 \begin{aligned}
-    \nabla_W L(w,b,\alpha)=w-\sum^m_{i=1}\alpha_i y^{(i)}x^{(i)} =0\\
+    \nabla_w L(w,b,\alpha)=w-\sum^m_{i=1}\alpha_i y^{(i)}x^{(i)} =0\\
     \Longrightarrow \quad w=\sum^m_{i=1}\alpha_i y^{(i)}x^{(i)} \quad & (6)\\
     \frac{\partial}{\partial b}L(w,b,\alpha)=\sum^m_{i=1}\alpha_i y^{(i)}=0 \quad & (7)
 \end{aligned}
 $$
 将(6)、(7)式代入(5)，简化一下，可以得到:  
-$$L(w,b,\alpha)=\sum^m_{i=1}\alpha_i-\frac12 \sum^m_{i,j=1} y^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}$$
+$$L(w,b,\alpha)=L(\alpha)=\sum^m_{i=1}\alpha_i-\frac12 \sum^m_{i,j=1} y^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}$$
 
-2. 再来求解 $max_\alpha \quad L(w,b,\alpha)$，就得到了相应的**对偶优化问题**
+2. 再来求解 $max_\alpha \quad L(\alpha)$，就得到了相应的**对偶优化问题**
 
 $$
 \begin{aligned}
@@ -128,7 +128,7 @@ $$
 \end{aligned}
 $$
 
-##### 结论:
+**结论**:  
 通过上面的过程，我们把原始问题: 求解$min_{w,b} \quad max_\alpha \quad L(w,b,\alpha)$  
 转化为了求解 $max_\alpha \quad  W(\alpha) $
 > 这是一个以$\alpha_i$为参数的最大值问题
@@ -187,12 +187,13 @@ $$
 以n=3为例，原始特征空间3维，新的特征空间9维，直接计算的话，复杂度是$O(n^2)$  
 而通过核函数，我们不需要去计算$\phi(x)^T \phi(x)$，直接使用K(x,x)即可  
 
-##### 结论:
+**结论**:  
 也就是说，我们把之前使用的$\langle x^{(i)} x^{(j)} \rangle$，都替换成K(x,x)，就相当于在一个高纬空间中去寻找分离超平面，而计算量没有明显变化
 
-##### 常用核函数:
-1. 线性核：$K(x,z) = (x^Tz+c)^2$，c为常数
+**常用核函数**:  
+1. 多项式核：$K(x,z) = (x^Tz+c)^2$，c为常数
 2. 高斯核：$K(x,z)=\exp (- \frac{\parallel x-z\parallel ^2}{2\sigma^2 })$
+3. 字符串核函数
 
 ## 5. 线性不可分的情况
 对于每一个样本点，我们添加了一个参数$\xi_i$，将原始问题改写为:
