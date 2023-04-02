@@ -25,7 +25,7 @@ $$
 $$
 \begin{aligned}
     y & \sim Bernoulli(\phi)\\
-    x|y = 0 & \sim N(\mu_o,\Sigma)\\
+    x|y = 0 & \sim N(\mu_0,\Sigma)\\
     x|y = 1 & \sim N(\mu_1,\Sigma)\\
 \end{aligned}
 $$
