@@ -1,0 +1,254 @@
+# softmax回归
+> 为了更好的理解神经网络中的`前向传播`、`后向传播`  
+> 动手实现一下softmax回归
+
+- 概要
+    1. 用pytorch实现一个简洁的`softmax回归`
+    2. 用numpy，从零开始再实现一遍
+
+## 一、理论介绍
+- [softmax回归](CS229_笔记/判别模型/广义线性模型?id=_13-softmax)
+
+## 二、pytorch实现
+1. 首先定义模型、损失函数、优化算法
+
+```python
+from torch import nn
+
+# 定义模型
+net = nn.Sequential(
+    nn.Linear(num_inputs, num_outputs)
+)
+
+# 初始化网络参数
+nn.init.normal_(net.linear.weight, mean=0, std=0.01)
+nn.init.constant_(net.linear.bias, val=0)
+
+# 定义损失函数: 交叉熵
+loss = nn.CrossEntropyLoss()
+
+# 定义优化算法: SGD
+optimizer = torch.optim.SGD(net.parameters(), lr=0.1)
+```
+
+2. 训练过程
+```python
+num_epochs, lr = 5, 0.1
+def train_softmax(net, train_iter, loss, num_epochs, batch_size, params=None, lr=None, optimizer=None):
+    # train_iter 是一个数据生成器，从训练集中，每次随机抽取一个batch_size的数据
+    for epoch in range(num_epochs):
+        for x, y in train_iter:
+            train_l_sum, n = 0.0, 0
+
+            y_hat = net(x) # 正向传播，预测
+            l = loss(y_hat, y).sum() # 计算损失函数            
+            l.backward() # 反向传播，计算梯度
+            optimizer.step() # 更新参数
+
+            optimizer.zero_grad() # 最后这里记得要将梯度清零
+
+            # 统计损失
+            train_l_sum += l.item()
+            n += y.shape[0]
+
+        # 每轮迭代后，打印信息
+        print('epoch %d, loss %.4f' % (epoch, train_l_sum/n))
+
+```
+
+## 三、numpy实现
+可以看到，定义`模型`和`损失函数`只用了两行代码:
+```python
+    nn.Linear(num_inputs, num_outputs)
+    loss = nn.CrossEntropyLoss()
+```
+
+接下来我们用numpy实现一遍，跟理论知识对应起来，熟悉一遍神经网络中的`前向传播`、`后向传播`
+
+### 0. 改写一下公式，参数$\theta$拆分为$w,b$
+$$ 
+p(y|x;\theta) = \prod ^k_{l=1} (\frac {e^{\theta_l^Tx}}{\sum^k_{j=1} e^{\theta_j^T x}})^{1\{y^{(i)}=l\}} \\
+\Rightarrow p(y|x;w,b) = \prod ^k_{l=1} (\frac {e^{w_l^T x + b}}{\sum^k_{j=1} e^{w_j^T x + b_j}})^{1\{y^{(i)}=l\}} \\
+$$
+
+### 1. 实现`线性层`，对应`nn.Linear(num_inputs=m, num_outputs=n)`
+- 正向传播很简单: `y = np.dot(x, W) + b`  
+    > 正向传播时，给出$w、x、b$，计算出$y$  
+
+对应的矩阵形式，展开如下:
+
+$$
+\begin{aligned}
+    \begin{pmatrix}
+        y^{(1)}_{1} & y^{(1)}_{2} & \cdots & y^{(1)}_{n}\\
+        y^{(2)}_{1} & y^{(2)}_{2} & \cdots & y^{(2)}_{n}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        y^{(k)}_{1} & y^{(k)}_{2} & \cdots & y^{(k)}_{n}\\
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+        x^{(1)}_{1} & x^{(1)}_{2} & \cdots & x^{(1)}_{m}\\
+        x^{(2)}_{1} & x^{(2)}_{2} & \cdots & x^{(2)}_{m}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        x^{(k)}_{1} & x^{(k)}_{2} & \cdots & x^{(k)}_{m}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        w_{11} & w_{12} & \cdots & w_{1n}\\
+        w_{21} & w_{22} & \cdots & w_{2n}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        w_{m1} & w_{m2} & \cdots & w_{mn}
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+        b_{1} \\
+        b_{2} \\
+        \vdots \\
+        b_{n} 
+    \end{pmatrix}
+\end{aligned}
+$$
+
+- 反向传播，需要推导一下
+    > 反向传播时，给出$dy$，需要我们计算$dx、dw、db$
+
+    1. $db$ 容易给出:  
+
+        $$
+        \begin{aligned}
+            \begin{pmatrix}
+                db_{1} \\
+                db_{2} \\
+                \vdots \\
+                db_{n} 
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+                dy^{(1)}_{1} + dy^{(1)}_{2} + \cdots + dy^{(1)}_{n}\\
+                dy^{(2)}_{1} + dy^{(2)}_{2} + \cdots + dy^{(2)}_{n}\\
+                \vdots \\
+                dy^{(k)}_{1} + dy^{(k)}_{2} + \cdots + dy^{(k)}_{n}\\
+            \end{pmatrix}
+        \end{aligned}
+        $$
+
+    2. $dx、dw$ 稍微复杂点儿:
+
+        $$
+        \begin{aligned}
+            \begin{pmatrix}
+                dw_{11} & dw_{12} & \cdots & dw_{1n}\\
+                dw_{21} & dw_{22} & \cdots & dw_{2n}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                dw_{m1} & dw_{m2} & \cdots & dw_{mn}
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+                x^{(1)}_{1} & x^{(2)}_{1} & \cdots & x^{(k)}_{1}\\
+                x^{(1)}_{2} & x^{(2)}_{2} & \cdots & x^{(k)}_{2}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                x^{(1)}_{m} & x^{(2)}_{m} & \cdots & x^{(k)}_{m}\\
+            \end{pmatrix}
+            \begin{pmatrix}
+                dy^{(1)}_{1} & dy^{(1)}_{2} & \cdots & dy^{(1)}_{n}\\
+                dy^{(2)}_{1} & dy^{(2)}_{2} & \cdots & dy^{(2)}_{n}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                dy^{(k)}_{1} & dy^{(k)}_{2} & \cdots & dy^{(k)}_{n}\\
+            \end{pmatrix}  \\
+            \begin{pmatrix}
+                dx^{(1)}_{1} & dx^{(2)}_{1} & \cdots & dx^{(k)}_{1}\\
+                dx^{(1)}_{2} & dx^{(2)}_{2} & \cdots & dx^{(k)}_{2}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                dx^{(1)}_{m} & dx^{(2)}_{m} & \cdots & dx^{(k)}_{m}\\
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+                dy^{(1)}_{1} & dy^{(1)}_{2} & \cdots & dy^{(1)}_{n}\\
+                dy^{(2)}_{1} & dy^{(2)}_{2} & \cdots & dy^{(2)}_{n}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                dy^{(k)}_{1} & dy^{(k)}_{2} & \cdots & dy^{(k)}_{n}\\
+            \end{pmatrix}
+            \begin{pmatrix}
+                w_{11} & w_{21} & \cdots & w_{m1}\\
+                w_{12} & w_{22} & \cdots & w_{m2}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                w_{1n} & w_{2n} & \cdots & w_{mn}
+            \end{pmatrix}
+        \end{aligned}
+        $$
+
+        - 简练一点，写成矩阵形式就是:
+        
+            $$
+                dW = X^T dY \\
+                dX = dY W^T \\
+            $$
+
+        - 于是写出对应的代码:
+        ```
+        dx = np.dot(dy, W.T)
+        dw = np.dot(X.T, dy)
+        db = np.sum(dy, axis=0)
+        ```
+
+    3. 完整的线性层代码
+    ```
+    class linner:
+        def __init__(self, W, b):
+            self.W = W
+            self.b = b
+            self.x = None
+            self.dW = None
+            self.db = None
+        
+        def forward(self, x): # 正向传播
+            self.x = x # 保存x，计算梯度时会用到
+            out = np.dot(x, self.W) + self.b
+            return out
+        
+        def backward(self, dout): # 反向传播
+            dx = np.dot(dout, self.W.T)
+            self.dW = np.dot(self.x.T, dout)
+            self.db = np.sum(dout, axis=0)
+            return dx
+    ```
+
+### 2. 实现`softmax+交叉熵`，对应`nn.CrossEntropyLoss()`
+
+- 先给出代码
+    ```
+    # 只考虑了batch版本，x.shape = (batch_size, n)
+    def softmax(x):
+        exp_x = np.exp(x)
+        sum_exp_x = np.sum(exp_x, axis=1).reshape(x.shape[0],1)
+        y = exp_x / sum_exp_x
+        return y
+
+    def cross_entropy_err(y, y_hat):
+        '''
+        y表示真实标签，y_hat表示预测标签
+        '''
+        
+        batch_size = y.shape[0]
+        return - np.sum(y * np.log(y_hat)) / batch_size
+
+    class SoftmaxWithLoss:
+        def __init__(self):
+            self.loss = None # 损失
+            self.y_hat = None # softmax的输出
+            self.y = None # 监督数据（one-hot vector）
+        
+        def forward(self, x, y):
+            self.y = y
+            self.y_hat = softmax(x)
+            self.loss = cross_entropy_error(self.y, self.y_hat)
+            return self.loss
+        
+        def backward(self, dout=1):
+            batch_size = self.y.shape[0]
+            dx = (self.y_hat - self.y) / batch_size # 注意这里的 '/batch_size'
+            return dx
+    ```
+- 正向传播: 先传入softmax函数，再去计算交叉熵损失
+- 反向传播: 可以看到很简洁的`dx = (self.y_hat - self.y) / batch_size`
+    > 也可以分别实现`softmax层`、`cross_entropy层`，但是反向传播就没有这么优雅  
+    > 也就是`《dive into pytorch》`中[这一节](https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter03_DL-basics/3.7_softmax-regression-pytorch?id=_373-softmax和交叉熵损失函数)提到的数值不稳定
