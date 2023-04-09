@@ -7,7 +7,6 @@
 - [学习笔记](笔记/)
     - [KL散度&交叉熵](笔记/KL散度&交叉熵.md)
     - [MLE&MAP](笔记/MLE&MAP.md)
-    - [transformer](笔记/transformer.md)
     - [Git](笔记/Git.md)
     - [排序模型](笔记/排序模型.md)
     - [排序算法_参考文献](笔记/排序算法_参考文献.md)

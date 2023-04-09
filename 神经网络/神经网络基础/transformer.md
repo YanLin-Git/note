@@ -1,4 +1,4 @@
-# transformer快速入门
+# transformer
 
 ## 一、参考文章
 1. 入门: https://jalammar.github.io/illustrated-transformer/
