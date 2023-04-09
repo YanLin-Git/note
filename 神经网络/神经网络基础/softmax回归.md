@@ -71,7 +71,9 @@ p(y|x;\theta) = \prod ^k_{l=1} (\frac {e^{\theta_l^Tx}}{\sum^k_{j=1} e^{\theta_j
 \Rightarrow p(y|x;w,b) = \prod ^k_{l=1} (\frac {e^{w_l^T x + b}}{\sum^k_{j=1} e^{w_j^T x + b_j}})^{1\{y^{(i)}=l\}} \\
 $$
 
-### 1. 实现`线性层`，对应`nn.Linear(num_inputs=m, num_outputs=n)`
+### 1. 实现`线性层`
+> 对应`nn.Linear(num_inputs=m, num_outputs=n)`
+
 - 正向传播很简单: `y = np.dot(x, W) + b`  
     > 正向传播时，给出$w、x、b$，计算出$y$  
 
@@ -212,7 +214,8 @@ $$
             return dx
     ```
 
-### 2. 实现`softmax+交叉熵`，对应`nn.CrossEntropyLoss()`
+### 2. 实现`softmax+cross_entropy`
+> 对应`nn.CrossEntropyLoss()`
 
 - 先给出代码
     ```
