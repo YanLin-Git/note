@@ -8,8 +8,8 @@
     4. 常见正则方法
 2. 以softmax为例，通过numpy实现，熟悉神经网络中的`前向传播`、`后向传播`
 3. 整理神经网络的一些基础组件
-    1. CNN
-    2. RNN
-    3. LSTM
-    4. GRU
+    1. RNN
+    2. LSTM
+    3. GRU
+    4. CNN
     5. transformer
