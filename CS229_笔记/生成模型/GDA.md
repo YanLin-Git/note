@@ -16,7 +16,7 @@ $$
 
 > 参考链接: https://www.zhihu.com/question/36339816/answer/385944057
 
-## 1 GDA
+## 1. GDA
 
 ### 1.1 概率解释
 
