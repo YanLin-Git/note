@@ -14,7 +14,7 @@ $$
 ```python
     def gru(inputs, state, params):
         W_xz, W_hz, b_z, W_xr, W_hr, b_r, W_xh, W_hh, b_h = params
-
+        
         '''
         inputs为 num_steps个形状为(batch_size, input_size)的矩阵
         outpus为 num_steps个形状为(batch_size, hidden_size)的矩阵，对应每个时间步的隐藏状态
@@ -25,6 +25,7 @@ $$
         W_hz、W_hr、W_hh: (hidden_size, hidden_size)
         H · W_hh: (hidden_size)
         '''
+
         H, = state
         outputs = []
         for X in inputs:
