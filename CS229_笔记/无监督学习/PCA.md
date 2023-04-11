@@ -16,3 +16,31 @@
     - 方阵特征值分解计算效率不高；
     - SVD 除了特征值分解这种求解方式外，还有更高效更准球的迭代求解方式，避免了$A^TA$的计算
     - 其实 PCA 与 SVD 的右奇异向量的压缩效果相同
+
+## python实现，简单版本
+```python
+    import numpy as np
+
+    def PCA(X,k):
+        n_samples, n_features = X.shape
+
+        # 去中心化
+        mean = np.array([np.mean(X[:,i]) for i in range(n_features)])
+        norm_X = X - mean
+
+        # 计算协方差矩阵
+        scatter_matrix=np.dot(np.transpose(norm_X),norm_X)
+        
+        # 计算特征值、特征向量
+        eig_val, eig_vec = np.linalg.eig(scatter_matrix)
+
+        # 排序后，取出topk个特征向量
+        eig_pairs = [(np.abs(eig_val[i]), eig_vec[:,i]) for i in range(n_features)]
+        eig_pairs.sort(reverse=True)
+        feature = np.array([ele[1] for ele in eig_pairs[:k]])
+        
+        # 计算降维后到数据
+        data = np.dot(norm_X, np.transpose(feature))
+
+        return data
+```
