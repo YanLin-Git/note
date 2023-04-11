@@ -254,4 +254,4 @@ $$
 - 正向传播: 先传入softmax函数，再去计算交叉熵损失
 - 反向传播: 可以看到很简洁的`dx = (self.y_hat - self.y) / batch_size`
     > 也可以分别实现`softmax层`、`cross_entropy层`，但是反向传播就没有这么优雅  
-    > 也就是`《dive into pytorch》`中[这一节](https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter03_DL-basics/3.7_softmax-regression-pytorch?id=_373-softmax和交叉熵损失函数)提到的数值不稳定
+    > 也就是`《dive into DL pytorch》`中[这一节](https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter03_DL-basics/3.7_softmax-regression-pytorch?id=_373-softmax和交叉熵损失函数)提到的数值不稳定

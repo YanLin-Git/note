@@ -36,7 +36,7 @@
         return Y
     ```
 
-## 2. pytorch中的调用:
+## 2. pytorch接口:
 1. 卷积层
     ```python
     # 一维卷积，textCNN中使用

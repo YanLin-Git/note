@@ -113,7 +113,7 @@ $$
 $$
 
 ## 4. 代码实现
-> 完整代码请参照`《dive into pytorch》`[相应章节](https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter10_natural-language-processing/10.3_word2vec-pytorch)
+> 完整代码请参照`《dive into DL pytorch》`[相应章节](https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter10_natural-language-processing/10.3_word2vec-pytorch)
 - 基于**负采样**的**skip-gram**模型
 
 1. 首先定义模型、损失函数、优化算法
