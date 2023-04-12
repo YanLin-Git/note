@@ -1,7 +1,7 @@
 # RNN
 ## 1. 公式
 $$
-    H_t = \tanh (X_t \dot W_{xh} + H_{t-1} \dot W_{hh} + b_h)
+    H_t = \tanh (X_t W_{xh} + H_{t-1} W_{hh} + b_h)
 $$
 
 ## 2. pytorch实现，简单版本:
