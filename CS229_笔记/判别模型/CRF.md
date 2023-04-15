@@ -149,3 +149,8 @@ $$
 ## 6. 预测算法
 
 **维特比算法**
+
+## 7. 代码实现
+1. 通俗理解，简单代码实现: https://www.cnblogs.com/createMoMo/p/7529885.html
+2. pytorch-crf官网介绍: https://pytorch-crf.readthedocs.io/en/stable/
+3. pytorch-crf的一个使用实例: https://github.com/XFR1998/NER-Model/blob/master/Bi-LSTM%2BCRF/model.py
