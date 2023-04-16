@@ -79,3 +79,6 @@ GPT的做法是在更小的单元byte上去运行BPE
 ## 3. UML(Unigram language Model)
 - **ALBERT**、**XLNet**中使用
 - 也是利用语言模型去建立`subword词表`，这里略
+
+## 补充
+**fastText**也是另外一种子词模型
