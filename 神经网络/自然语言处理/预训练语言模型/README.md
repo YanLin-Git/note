@@ -47,20 +47,20 @@
                 > NSP中，两个连续句子为正例，随机选取的为负例，任务过于简单，模型学不到什么知识  
                 > SOP中，两个连续句子为正例，交换两个句子顺序为负例
 
-4. 汇总
+4. 目录
     > 综上，接下来这部分将按照以下顺序 熟悉模型 (前3个上边没提):  
 
-    1. NNLM(2003) [paper](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
-    2. word2vec(2013) [paper](https://proceedings.neurips.cc/paper_files/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
-    3. ELMo
-    4. GPT
-    5. Bert
-    6. RoBERTa
-    7. ALBERT
-    8. ELECTRA
-    9. MASS
-    10. BART
-    11. T5
-    12. UniLM
-    13. XLNet
+    1. [x] NNLM(2003) [paper](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
+    2. [x] word2vec(2013) [paper](https://proceedings.neurips.cc/paper_files/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
+    3. [x] ELMo(2018) [paper](https://arxiv.org/pdf/1802.05365v2.pdf)
+    4. [ ] GPT
+    5. [ ] Bert
+    6. [x] RoBERTa
+    7. [ ] ALBERT
+    8. [ ] ELECTRA
+    9. [ ] MASS
+    10. [ ] BART
+    11. [ ] T5
+    12. [ ] UniLM
+    13. [ ] XLNet
 
