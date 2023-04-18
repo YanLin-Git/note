@@ -1,6 +1,27 @@
 # 预训练语言模型
+
+- 目录
+    1. [x] NNLM(2003) [paper](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
+    2. [x] word2vec(2013) [paper](https://proceedings.neurips.cc/paper_files/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
+    3. [x] ELMo(2018) [paper](https://arxiv.org/pdf/1802.05365v2.pdf)
+    4. [ ] GPT系列
+        - GPT(2018.6) [paper](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)
+        - GPT-2(2019.2) [paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)
+        - GPT-3(2020.7) [paper](https://arxiv.org/pdf/2005.14165v4.pdf)
+        - GPT-4(2023.3) [paper](https://arxiv.org/pdf/2303.08774v3.pdf)
+    5. [ ] Bert(2019.5) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
+    6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/pdf/1907.11692v1.pdf)
+    7. [ ] ALBERT(2020.2) [paper](https://arxiv.org/pdf/1909.11942v6.pdf)
+    8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/pdf/2003.10555v1.pdf)
+    9. [ ] MASS(2019.5) [paper](https://arxiv.org/pdf/1905.02450v5.pdf)
+    10. [ ] BART(2019.10) [paper](https://arxiv.org/pdf/1910.13461v1.pdf)
+    11. [ ] T5(2020.7) [paper](https://arxiv.org/pdf/1910.10683v3.pdf)
+    12. [ ] UniLM(2019.10) [paper](https://arxiv.org/pdf/1905.03197v3.pdf)
+    13. [ ] XLNet(2020.1) [paper](https://arxiv.org/pdf/1906.08237v2.pdf)
+
+
 > 参考: https://zhuanlan.zhihu.com/p/254821426  
-> 梳理一下预训练模型的脉络，沿着这个脉络，一步步熟悉每个模型
+> 梳理一下预训练模型的脉络，然后沿着这个脉络(上面的`4-13`)，一步步熟悉每个模型
 
 1. 常见模型结构
     - transformer不同的用法
@@ -46,21 +67,3 @@
             - SOP(sentence order prediction)
                 > NSP中，两个连续句子为正例，随机选取的为负例，任务过于简单，模型学不到什么知识  
                 > SOP中，两个连续句子为正例，交换两个句子顺序为负例
-
-4. 目录
-    > 综上，接下来这部分将按照以下顺序 熟悉模型 (前3个上边没提):  
-
-    1. [x] NNLM(2003) [paper](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
-    2. [x] word2vec(2013) [paper](https://proceedings.neurips.cc/paper_files/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
-    3. [x] ELMo(2018) [paper](https://arxiv.org/pdf/1802.05365v2.pdf)
-    4. [ ] GPT
-    5. [ ] Bert
-    6. [x] RoBERTa
-    7. [ ] ALBERT
-    8. [ ] ELECTRA
-    9. [ ] MASS
-    10. [ ] BART
-    11. [ ] T5
-    12. [ ] UniLM
-    13. [ ] XLNet
-
