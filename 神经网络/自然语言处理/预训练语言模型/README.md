@@ -6,10 +6,10 @@
     3. [x] ELMo(2018) [paper](https://arxiv.org/pdf/1802.05365v2.pdf)
     4. [ ] GPT系列
         - [x] GPT(2018.6) [paper](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)
-        - [ ] GPT-2(2019.2) [paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)
+        - [x] GPT-2(2019.2) [paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)
         - [ ] GPT-3(2020.7) [paper](https://arxiv.org/pdf/2005.14165v4.pdf)
         - [ ] GPT-4(2023.3) [paper](https://arxiv.org/pdf/2303.08774v3.pdf)
-    5. [x] Bert(2018) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
+    5. [x] Bert(2018.10) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
     6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/pdf/1907.11692v1.pdf)
     7. [ ] ALBERT(2020.2) [paper](https://arxiv.org/pdf/1909.11942v6.pdf)
     8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/pdf/2003.10555v1.pdf)
