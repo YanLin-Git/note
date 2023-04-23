@@ -15,7 +15,7 @@
     > 针对具体的下游任务，只需要修改`input的形式`，就可以套用预训练所使用的模型
 - 具体修改方式可以参照论文中这张图片:
 
-    ![GPT1_fine_tuning.jpg](jpgs/GPT1_fine_tuning.jpg) 
+    ![GPT_1_fine_tuning.jpg](jpgs/GPT_1_fine_tuning.jpg) 
 
 ## 4. zero-shot
 > - paper: https://arxiv.org/abs/1710.04837  
@@ -34,6 +34,17 @@
     4. 只使用**zero-shot**
         - 不再进行下游任务的**fine-tuning**，预训练的模型直接去下游任务上评估效果
 
+# GPT-3
+- 进一步增加训练集，扩大模型规模
+- 对之前的**zero-shot**进一步探索，提出一个新名词 `in-context learning`，包括3种方式:
+    1. zero-shot
+    2. one-shot
+    3. few-shot
+- 具体做法可以参照论文中这张图片:
+
+    ![GPT_3_in_context_learning.jpg](jpgs/GPT_3_in_context_learning.jpg) 
+
+
 # 题外话
 **ELMo** --> **GPT-1** --> **Bert** --> **GPT-2** --> **RoBERTa** --> **GPT-3**
 
@@ -44,7 +55,8 @@
 |$BERT_{base}$|16G BooksCorpus + Wikipedia|8亿 + 25亿|wordpiece|L=12,H=768,A=12|110M|为了跟`GPT-1`做对比|
 |$BERT_{large}$|同上|同上|同上|L=24,H=1024,A=16|340M||
 |GPT-2|40G WebText <br> 1. 过滤低质量文本<br> 2. 除去Wikipedia中的数据||BBPE|L=12,H=768|117M|为了跟`GPT-1`做对比|
-|GPT-2|同上||同上|L=24,H=1024|345M|为了跟`Bert`做对比|
-|$GPT-2$|同上||同上|L=48,H=1600|1542M||
+|GPT-2|同上||BBPE|L=24,H=1024|345M|为了跟`Bert`做对比|
+|$GPT-2$|同上||BBPE|L=48,H=1600|1542M||
 |$RoBERTa$|16G BooksCorpus + Wikipedia <br> 76G CC-News <br> 38G OpenWebText <br> 31G Stories||BBPE||||
+|$GPT-3$|Common Crawl <br> WebText2 <br> Books1 <br> Books2 <br> Wikipedia||BBPE|L=96,H=12288,A=96|175B||
 

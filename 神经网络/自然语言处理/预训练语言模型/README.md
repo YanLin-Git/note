@@ -7,7 +7,7 @@
     4. [ ] GPT系列
         - [x] GPT(2018.6) [paper](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)
         - [x] GPT-2(2019.2) [paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)
-        - [ ] GPT-3(2020.7) [paper](https://arxiv.org/pdf/2005.14165v4.pdf)
+        - [x] GPT-3(2020.7) [paper](https://arxiv.org/pdf/2005.14165v4.pdf)
         - [ ] GPT-4(2023.3) [paper](https://arxiv.org/pdf/2303.08774v3.pdf)
     5. [x] Bert(2018.10) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
     6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/pdf/1907.11692v1.pdf)
