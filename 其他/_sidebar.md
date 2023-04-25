@@ -1,0 +1,12 @@
+- [主页](/)
+- [数学基础](数学基础/)
+- [CS229](CS229_笔记/)
+- [神经网络](神经网络/)
+- [其他](其他/)
+    - [markdown](其他/markdown.md)
+    - [LaTex](其他/LaTex.md)
+    - [mermaid](其他/mermaid.md)
+    - [数据操作](其他/数据操作.md)
+    - [KL散度&交叉熵](其他/KL散度&交叉熵.md)
+    - [MLE&MAP](其他/MLE&MAP.md)
+    
