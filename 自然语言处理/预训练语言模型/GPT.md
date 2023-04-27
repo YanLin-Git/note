@@ -24,6 +24,8 @@
 发现随着预训练过程中模型的不断更新，下游任务上的表现也越好
 
 ## GPT-2
+> 只是扩大了规模，效果上并不出彩  
+> 相比GPT-1，更加强调**zero-shot**
 - 在GPT的基础上，做了几处修改:
     1. 进一步增加预训练数据数量
         - **Bert**增加了`Wikipedia`，**GPT-2**整理出了`WebText`
@@ -34,11 +36,11 @@
         - 不再进行下游任务的**fine-tuning**，预训练的模型直接去下游任务上评估效果
 
 ## GPT-3
-- 进一步增加训练集，扩大模型规模
+- 进一步扩大规模，效果也提上来了，引起广泛关注，例如后来的`提示学习`、`思维链`
 - 对之前的**zero-shot**进一步探索，提出一个新名词 `in-context learning`，包括3种方式:
-    1. zero-shot
-    2. one-shot
-    3. few-shot
+    1. zero-shot prompting
+    2. one-shot prompting
+    3. few-shot prompting
 
     > 预训练好语言模型之后，在做推理时，只需要将`input`修改为特定格式，经过模型，得到`output`
 

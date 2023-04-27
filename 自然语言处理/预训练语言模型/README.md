@@ -15,7 +15,7 @@
     8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/pdf/2003.10555v1.pdf)
     9. [ ] MASS(2019.5) [paper](https://arxiv.org/pdf/1905.02450v5.pdf)
     10. [ ] BART(2019.10) [paper](https://arxiv.org/pdf/1910.13461v1.pdf)
-    11. [ ] T5(2020.7) [paper](https://arxiv.org/pdf/1910.10683v3.pdf)
+    11. [x] T5(2020.7) [paper](https://arxiv.org/pdf/1910.10683v3.pdf)
     12. [ ] UniLM(2019.10) [paper](https://arxiv.org/pdf/1905.03197v3.pdf)
     13. [ ] XLNet(2020.1) [paper](https://arxiv.org/pdf/1906.08237v2.pdf)
 
