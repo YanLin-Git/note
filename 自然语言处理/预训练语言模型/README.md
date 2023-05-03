@@ -11,7 +11,7 @@
         - [ ] GPT-4(2023.3) [paper](https://arxiv.org/pdf/2303.08774v3.pdf)
     5. [x] Bert(2018.10) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
     6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/pdf/1907.11692v1.pdf)
-    7. [ ] ALBERT(2020.2) [paper](https://arxiv.org/pdf/1909.11942v6.pdf)
+    7. [x] ALBERT(2020.2) [paper](https://arxiv.org/pdf/1909.11942v6.pdf)
     8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/pdf/2003.10555v1.pdf)
     9. [ ] MASS(2019.5) [paper](https://arxiv.org/pdf/1905.02450v5.pdf)
     10. [ ] BART(2019.10) [paper](https://arxiv.org/pdf/1910.13461v1.pdf)
@@ -52,18 +52,10 @@
     5. Permuted Language Model
         - XLNet
 
-3. 训练任务
-    > 在研究每个模型细节时，顺便关注下训练任务的变化，先搬个结论:
-
-    1. Bert中训练任务:
-        1. 单词级任务
-            - MLM，Mask语言模型
-        2. 句子级任务
-            - NSP，下一句预测
-    2. 目前认为最有效的训练任务:
-        1. 单词级任务
-            - Span类任务，Mask的不是一个独立单词，而是连续的单词片段、短语等等
-        2. 句子级任务
-            - SOP(sentence order prediction)
-                > NSP中，两个连续句子为正例，随机选取的为负例，任务过于简单，模型学不到什么知识  
-                > SOP中，两个连续句子为正例，交换两个句子顺序为负例
+3. 预训练任务的变化
+    |模型|token级任务|句子级别任务|备注|
+    |---|---|---|---|
+    |原始Bert|MLM|NSP||
+    |RoBERTa|MLM||NSP作用不大，舍弃|
+    |ALBERT|MLM|SOP|两个连续句子为正例，交换两个句子顺序为负例|
+    |T5|span mask||Mask的不是一个独立token，而是连续的几个token|
