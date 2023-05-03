@@ -5,7 +5,7 @@
 
 |模型|发布方|参数量|备注|
 |---|---|---|---|
-|instructGPT||||
+|instructGPT|openAI||chatGPT介绍中说，使用instructGPT论文里的方法|
 |PaLM|google|||
 |Chinchilla|DeepMind|||
 |toolformer|||使得LLM能够使用各种工具|
