@@ -31,7 +31,7 @@ $$
 
 ## 3. pytorch接口
 ```python
-    lstm_layer = nn.GRU(input_size=, hidden_size=num_hiddens)
+    lstm_layer = nn.LSTM(input_size=, hidden_size=num_hiddens)
 
     X = torch.rand(num_steps, batch_size, input_size) # (num_steps, batch_size, input_size)
     state = None

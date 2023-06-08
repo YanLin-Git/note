@@ -8,5 +8,6 @@
     - [预训练语言模型](自然语言处理/预训练语言模型/)
     - [LLM](自然语言处理/LLM/)
         - [instructGPT](自然语言处理/LLM/instructGPT.md)
+        - [peft](自然语言处理/LLM/peft.md)
 - [其他](其他/)
     
