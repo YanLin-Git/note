@@ -32,6 +32,7 @@
         - 数据并行 (Data Parallelism)
         - 张量并行
         - 流水线并行
+        - 优化器并行 (ZeRO)
     7. 训练稳定性
     8. 模型量化 (quantization)
 
