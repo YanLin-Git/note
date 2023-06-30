@@ -1,8 +1,9 @@
 # LLM(大语言模型)
 
 - 目录
-    1. [x] instructGPT [paper](https://arxiv.org/pdf/2203.02155v1.pdf)
-    2. [x] peft
+    1. [instructGPT](自然语言处理/LLM/instructGPT.md) [paper](https://arxiv.org/pdf/2203.02155v1.pdf)
+    2. [peft](自然语言处理/LLM/peft.md)
+    3. [langchain](自然语言处理/LLM/langchain.md)
 
 > GPT-3之后，出来一系列LLM，以及基于LLM的一些研究，遇到就放在这里  
 1. 相关技术
@@ -42,7 +43,7 @@
 |LLaMA|Facebook|65B||
 |Alpaca|斯坦福|7B|效果可媲美175B的LLM|
 |vicuna||||
-|Chinese-LLaMA-Alpaca|||https://github.com/ymcui/Chinese-LLaMA-Alpaca|
+|Chinese-LLaMA-Alpaca|哈工大||https://github.com/ymcui/Chinese-LLaMA-Alpaca|
 |GLM|清华||https://github.com/THUDM/GLM|
 |ChatGLM-6B|||https://github.com/THUDM/ChatGLM-6B|
 |instructGPT|openAI||chatGPT介绍中说，使用instructGPT论文里的方法|

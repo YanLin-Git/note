@@ -9,5 +9,6 @@
     - [LLM](自然语言处理/LLM/)
         - [instructGPT](自然语言处理/LLM/instructGPT.md)
         - [peft](自然语言处理/LLM/peft.md)
+        - [langchain](自然语言处理/LLM/langchain.md)
 - [其他](其他/)
     
