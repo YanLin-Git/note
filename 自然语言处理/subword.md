@@ -83,7 +83,7 @@ GPT的做法是在更小的单元byte上去运行BPE
 - 也是利用语言模型去建立`subword词表`，这里略
 
 ## 4. 如何使用这几种subword算法？
-- 谷歌推出的开元工具`sentencepiece`
+- 谷歌推出的开源工具[sentencepiece](https://github.com/google/sentencepiece)
 1. 训练一个sentencepiece model
 ```python
 import sentencepiece

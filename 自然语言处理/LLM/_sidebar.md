@@ -10,5 +10,6 @@
         - [instructGPT](自然语言处理/LLM/instructGPT.md)
         - [peft](自然语言处理/LLM/peft.md)
         - [langchain](自然语言处理/LLM/langchain.md)
+        - [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
 - [其他](其他/)
     

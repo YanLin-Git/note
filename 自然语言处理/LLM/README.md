@@ -4,6 +4,7 @@
     1. [instructGPT](自然语言处理/LLM/instructGPT.md) [paper](https://arxiv.org/pdf/2203.02155v1.pdf)
     2. [peft](自然语言处理/LLM/peft.md)
     3. [langchain](自然语言处理/LLM/langchain.md)
+    4. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
 
 > GPT-3之后，出来一系列LLM，以及基于LLM的一些研究，遇到就放在这里  
 1. 相关技术
