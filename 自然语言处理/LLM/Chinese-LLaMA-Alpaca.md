@@ -203,7 +203,7 @@ drwxr-xr-x 8 root root 4.0K  7月 17 10:03 ..
 -rw-r--r-- 1 root root  132  7月 17 09:58 generation_config.json
 -rw-r--r-- 1 root root 9.3G  7月 17 09:58 pytorch_model-00001-of-00002.bin # 模型参数所在文件 1/2
 -rw-r--r-- 1 root root 3.6G  7月 17 09:58 pytorch_model-00002-of-00002.bin # 模型参数所在文件 2/2
--rw-r--r-- 1 root root  27K  7月 17 09:59 pytorch_model.bin.index.json
+-rw-r--r-- 1 root root  27K  7月 17 09:59 pytorch_model.bin.index.json     # 模型参数的map表，记录每个参数保存在哪个文件中(上面的1/2、2/2)
 -rw-r--r-- 1 root root  411  7月 17 09:58 special_tokens_map.json
 -rw-r--r-- 1 root root  747  7月 17 09:58 tokenizer_config.json
 -rw-r--r-- 1 root root 741K  7月 17 09:58 tokenizer.model
@@ -239,8 +239,11 @@ sh ./scripts/training/run_sft.sh
 </details>
 
 ## 5、本地推理
+### 5.0、base_model
+- 这里使用`原始llama`+`Chinese-LLaMA-Plus-7B`+`Chinese-Alpaca-Plus-7B`作为最终的全量模型
+
 ### 5.1、使用Transformers推理
-1. 命令行交互
+1. 命令行交互，占用15G显存
 ```shell
 python scripts/inference/inference_hf.py \
     --base_model 全量模型所在目录 \
@@ -256,10 +259,10 @@ python scripts/inference/gradio_demo.py --base_model 全量模型所在目录
 - todo 参考[官方文档](https://github.com/ymcui/Chinese-LLaMA-Alpaca/wiki/llama.cpp量化部署)
 
 ### 5.3、与LangChain进行集成
-1. 检索式问答
+1. 检索式问答，占用15G显存
 ```shell
 python scripts/langchain/langchain_qa.py \
-  --embedding_path text2vec-large-chinese #本地的embedding model所在目录，具体模型信息可以查看huggingface \
+  --embedding_path 本地的embedding model所在目录 \
   --model_path 全量模型所在目录 \
   --file_path 待进行检索与提问的文档 \
   --chain_type 可以为refine或stuff
