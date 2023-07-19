@@ -10,7 +10,8 @@
 1. 相关技术
     1. 模型架构
         - GPT: decoder
-        - GLM: encoder-decoder
+        - GLM、ChatGLM: encoder-decoder
+        - ChatGLM2: decoder
     2. Layer Norm
         - Post Layer Norm
         - Pre Layer Norm
@@ -38,7 +39,7 @@
     7. 训练稳定性
     8. 模型量化 (quantization)
 
-2. 相关论文
+2. 模型汇总
 |模型|发布方|参数量|备注|
 |---|---|---|---|
 |LLaMA|Facebook|65B||
@@ -46,9 +47,9 @@
 |vicuna||||
 |Chinese-LLaMA-Alpaca|哈工大||https://github.com/ymcui/Chinese-LLaMA-Alpaca|
 |GLM|清华||https://github.com/THUDM/GLM|
-|ChatGLM-6B|||https://github.com/THUDM/ChatGLM-6B|
-|instructGPT|openAI||chatGPT介绍中说，使用instructGPT论文里的方法|
-|toolformer|||使得LLM能够使用各种工具|
+|ChatGLM-6B|清华||https://github.com/THUDM/ChatGLM-6B|
+|instructGPT|openAI||`paper`, chatGPT介绍中说，使用instructGPT论文里的方法|
+|toolformer|||`paper`, 使得LLM能够使用各种工具|
 |PaLM|google|||
 |Chinchilla|DeepMind|||
 |visual chatGPT||||
