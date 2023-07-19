@@ -22,7 +22,7 @@ python scripts/merge_tokenizer/merge_tokenizers.py \
 ```
 
 <details>
-<summary><b>最后输出格式</b></summary>
+<summary><b>最后输出格式:</b></summary>
 
 ```shell
 ls -alh merged_tokenizer_hf merged_tokenizer_sp # 查看这两个目录
@@ -55,7 +55,28 @@ drwxr-xr-x 14 root root 4.0K  7月 17 10:12 ..
     - `output_dir`: 模型权重的输出路径，例如`./models/chinese_llama_lora_test`
 
 <details>
-<summary><b>最后输出格式</b></summary>
+<summary><b>训练的简要流程如下:</b></summary>
+
+```python
+# 1、准备数据集
+tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs) # 1.1、加载分词器
+raw_dataset = load_dataset("text", data_files=data_file)                                 # 1.2、使用load_dataset读取原始数据集
+tokenized_dataset = raw_dataset.map(tokenize_function)                                   # 1.3、对原始数据中的每句话进行切分，需要用到上面加载好的分词器
+grouped_datasets = tokenized_dataset.map(group_texts)                                    # 1.4、将切分后的数据整理成 n个长度为block_size的片段
+lm_datasets = lm_datasets.train_test_split(test_size)                                    # 1.5、拆分训练、测试集
+
+# 2、加载模型
+model = LlamaForCausalLM.from_pretrained(model_args.model_name_or_path)       # 2.1、加载base_model
+model = PeftModel.from_pretrained(model, training_args.peft_path)             # 2.2、加载lora权重
+
+# 3、训练
+train_result = trainer.train(resume_from_checkpoint=checkpoint)
+```
+
+</details>
+
+<details>
+<summary><b>最后输出格式:</b></summary>
 
 ```shell
 ls -alh models/chinese_llama_lora_test models/chinese_llama_lora_test/pt_lora_model
@@ -111,9 +132,41 @@ drwxr-xr-x 3 root root 4.0K  7月 14 15:24 ..
     - `dataset_dir`: 指令精调数据所在目录
     - `validation_file`: 用作验证集的单个指令精调json文件
     - `output_dir`: 模型权重的输出路径，例如`chinese_alpaca_lora_test`
- 
+
 <details>
-<summary><b>最后输出格式</b></summary>
+<summary><b>指令精调的简要流程如下:</b></summary>
+
+- 整个流程与2.1中基本相同:
+    1. 准备数据集
+    2. 加载模型
+    3. 训练
+- 区别仅在于数据集的处理方式上，这里记录下数据集的处理
+
+```python
+# 1、加载分词器
+tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
+
+# 2、读取原始的json文件，整理成固定格式，以便后续模型输入
+# json文件中有3个字段: instruction、input、output
+# 该函数会使用模板将3个字段拼接为:
+# 
+#     Below is an instruction that describes a task. 
+#     Write a response that appropriately completes the request.\n\n
+#     ### Instruction:\n{instruction}\n{input}}\n\n### Response:{output}
+# 
+train_dataset = buid_instruction_dataset(data_path=files, tokenizer=tokenizer, max_seq_length=data_args.max_seq_length)
+
+# 3、padding，使得每个batch内的输入长度相同
+# 预训练阶段，直接将语料拆分为n个block_size的片段，等长的，不需要这步
+# 指令精调阶段，每个输入长度不同，因此需要padding
+DataCollatorForSupervisedDataset(tokenizer=tokenizer)
+
+```
+
+</details>
+
+<details>
+<summary><b>最后输出格式:</b></summary>
         
 ```shell
 ls -alh models/chinese_alpaca_lora_test models/chinese_alpaca_lora_test/sft_lora_model
@@ -190,7 +243,7 @@ LlamaForCausalLM.save_pretrained(base_model, output_dir)                # 4、�
 </details>
 
 <details>
-<summary><b>最后输出格式</b></summary>
+<summary><b>最后输出格式:</b></summary>
 
 ```shell
 ls -alh models/chinese_llama_lora_merged
