@@ -110,9 +110,3 @@ spm = sentencepiece_model_pb2.ModelProto()
 spm.ParseFromString( sp_model.serialized_model_proto() ) # 反序列化
 spm.SerializeToString() # 序列化
 ```
-
-
-## 补充
-**fastText**也是另外一种子词模型
-- 在word2vec的skip-gram模型上，做了一些简单修改，可以看看这里的介绍: https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter10_natural-language-processing/10.4_fasttext
-- [paper](https://arxiv.org/pdf/1607.01759.pdf)
