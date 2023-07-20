@@ -43,5 +43,17 @@ result += (
 </details>
 
 ### 2.4 Prefix-Tuning
-- 通过HuggingFace框架内置的past_key_value参数控制
-- `todo`: 了解`past_key_value`的作用 (印象中是多轮对话，可直接保存过去计算好的key、value)
+- 通过HuggingFace框架内置的past_key_values参数控制
+    - 在`attention_fn`函数中，key、value前先拼接一些token_embedding，再进行后续计算
+    
+<details>
+<summary><b>主要代码如下:</b></summary>
+
+```python
+    past_key, past_value = layer_past[0], layer_past[1]       # past_key_values参数传入的内容，这里就是虚拟token对应的embedding
+    key_layer = torch.cat((past_key, key_layer), dim=0)       # 拼接在key_layer最前面
+    value_layer = torch.cat((past_value, value_layer), dim=0) # 拼接在value_layer最前面
+```
+
+</details>
+    
