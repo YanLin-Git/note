@@ -5,6 +5,7 @@
     2. [peft](自然语言处理/LLM/peft.md)
     3. [langchain](自然语言处理/LLM/langchain.md)
     4. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
+    5. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
 
 > GPT-3之后，出来一系列LLM，以及基于LLM的一些研究，遇到就放在这里  
 1. 相关技术
@@ -42,12 +43,14 @@
 2. 模型汇总
 |模型|发布方|参数量|备注|
 |---|---|---|---|
-|LLaMA|Facebook|65B||
+|LLaMA|Meta|65B|[paper](https://arxiv.org/pdf/2302.13971.pdf)|
+|LLaMA2|Meta||[paper](https://ai.meta.com/research/publications/llama-2-open-foundation-and-fine-tuned-chat-models/)|
 |Alpaca|斯坦福|7B|效果可媲美175B的LLM|
 |vicuna||||
 |Chinese-LLaMA-Alpaca|哈工大||https://github.com/ymcui/Chinese-LLaMA-Alpaca|
 |GLM|清华||https://github.com/THUDM/GLM|
 |ChatGLM-6B|清华||https://github.com/THUDM/ChatGLM-6B|
+|ChatGLM2-6B|清华||https://github.com/THUDM/ChatGLM2-6B|
 |instructGPT|openAI||`paper`, chatGPT介绍中说，使用instructGPT论文里的方法|
 |toolformer|||`paper`, 使得LLM能够使用各种工具|
 |PaLM|google|||

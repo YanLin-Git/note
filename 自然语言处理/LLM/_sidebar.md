@@ -11,5 +11,6 @@
         - [peft](自然语言处理/LLM/peft.md)
         - [langchain](自然语言处理/LLM/langchain.md)
         - [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
+        - [ChatGLM](自然语言处理/LLM/ChatGLM.md)
 - [其他](其他/)
     
