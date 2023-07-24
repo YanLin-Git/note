@@ -50,9 +50,17 @@ result += (
 <summary><b>主要代码如下:</b></summary>
 
 ```python
-    past_key, past_value = layer_past[0], layer_past[1]       # past_key_values参数传入的内容，这里就是虚拟token对应的embedding
-    key_layer = torch.cat((past_key, key_layer), dim=0)       # 拼接在key_layer最前面
-    value_layer = torch.cat((past_value, value_layer), dim=0) # 拼接在value_layer最前面
+# 初始化，transformers中每层的key、value都需要添加，因此维度是: num_layers * hidden_size * 2
+self.embedding = torch.nn.Embedding(config.pre_seq_len, config.num_layers * config.hidden_size * 2)
+past_key_values = self.embedding(prefix)
+
+
+# 'past_key_values'拆分，变形之后，传递到每层的'layer_past'，为两个tensor组成的数组
+# 每个tensor形状为 (pre_seq_len, batch_size, hidden_size)
+# forward时，看起来就很简单:
+past_key, past_value = layer_past[0], layer_past[1]       # past_key_values参数传入的内容，这里就是虚拟token对应的embedding
+key_layer = torch.cat((past_key, key_layer), dim=0)       # 拼接在key_layer最前面
+value_layer = torch.cat((past_value, value_layer), dim=0) # 拼接在value_layer最前面
 ```
 
 </details>
