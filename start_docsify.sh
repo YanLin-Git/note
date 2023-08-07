@@ -1,12 +1,12 @@
-#安装npm、docsify-cli后，可使用该命令:
+#瀹夎npm銆乨ocsify-cli鍚庯紝鍙娇鐢ㄨ鍛戒护:
 #nohup docsify serve 1>docsify.std 2>docsify.err &
 
-#简易版，可使用以下命令:
+#绠�鏄撶増锛屽彲浣跨敤浠ヤ笅鍛戒护:
 #python2
 #nohup python -m SimpleHTTPServer 3000 1>docsify.std 2>docsify.err &
 
 #python3
 #nohup python3 -m http.server 3000 1>docsify.std 2>docsify.err &
 
-#为了不使用cache缓存，强制刷新，编写脚本:
-nohup python3 service.py 1>docsify.std 2>docsify.err &
+#涓轰簡涓嶄娇鐢╟ache缂撳瓨锛屽己鍒跺埛鏂帮紝缂栧啓鑴氭湰:
+nohup python service.py 1>docsify.std 2>docsify.err &

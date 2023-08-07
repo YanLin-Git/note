@@ -1,11 +1,14 @@
 1. 常用工具
-    1. [markdown](其他/markdown.md)
+    1. [Git](其他/Git.md)
+    2. [SVN](其他/SVN.md)
+    3. [linux常用命令](其他/linux.md)
+    4. [markdown](其他/markdown.md)
         - 编写文档，标题、注释、表格等
-    2. [LaTex](其他/LaTex.md)
+    5. [LaTex](其他/LaTex.md)
         - 书写一些数学公式、向量、矩阵
-    3. [mermaid](其他/mermaid.md)
+    6. [mermaid](其他/mermaid.md)
         - 画图
-    4. [numpy、pytorch](其他/数据操作.md)
+    7. [numpy、pytorch](其他/数据操作.md)
 2. 零散知识点
     1. [KL散度&交叉熵](其他/KL散度&交叉熵.md)
     2. [MLE&MAP](其他/MLE&MAP.md)
