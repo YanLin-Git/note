@@ -6,12 +6,12 @@
 2. 安装 `brew install subversion`
 3. 查看版本 `svn --version`
 ### 1.2、windows安装
-- todo
+- 参考 https://www.runoob.com/svn/svn-install.html
 
 
 ## 二、新建自己的分支，开发
-1. 新建分支(copy) `svn cp -m 'myname dev' trunk地址 自己的branch`
-2. 拉取branch代码(checkout) `svn co 自己的branch地址 本地目录`
+1. 新建分支(copy) `svn copy -m 'myname dev' trunk地址 自己的branch`
+2. 拉取branch代码(checkout) `svn checkout 自己的branch地址 本地目录`
 3. 代码开发
 4. 提交，先更新一下: `svn update`，然后提交: `svn commit -m '修改日志'`
 

@@ -1,7 +1,7 @@
 # LLM(大语言模型)
 
 - 目录
-    1. [instructGPT](自然语言处理/LLM/instructGPT.md) [paper](https://arxiv.org/pdf/2203.02155v1.pdf)
+    1. [instructGPT](自然语言处理/LLM/instructGPT.md)
     2. [peft](自然语言处理/LLM/peft.md)
     3. [langchain](自然语言处理/LLM/langchain.md)
     4. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
