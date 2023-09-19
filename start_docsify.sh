@@ -10,3 +10,4 @@
 
 # 为了不使用cache缓存，强制刷新，编写脚本:
 nohup python service.py 1>docsify.std 2>docsify.err &
+# nohup python service.py 1>/dev/null 2>&1 &
