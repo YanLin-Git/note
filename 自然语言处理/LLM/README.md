@@ -7,17 +7,8 @@
     4. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
     5. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
 
-> GPT-3之后，出来一系列LLM，以及基于LLM的一些研究，遇到就放在这里  
-1. 相关技术
-    1. 模型架构
-        - GPT: decoder
-        - GLM、ChatGLM: encoder-decoder
-        - ChatGLM2: decoder
-    2. Layer Norm
-        - Post Layer Norm
-        - Pre Layer Norm
-        - Sandwich Layer Norm
-    3. Positional Embedding
+1. **todo.list**
+    1. Positional Embedding
         - 绝对位置编码
             1. 三角式
             2. 可学习式
@@ -25,20 +16,23 @@
             1. transformer-XL
             2. ALiBi (BLOOM、MPT采用)
             3. RoPE (旋转式编码，绝对编码实现相对编码， PaLM、GLM-130B、LLaMa采用)
-    4. 混合精度训练
-        - forward时，采用fp16
-        - backward时，采用fp32
-    5. 内存占用
+    2. 混合精度训练 & 模型量化(quantization)
+        1. Apex的amp
+        2. bitsandbytes
+        3. 例如ChatGLM2的P-Tuning，采用这种方式: `模型主体`部分，采用fp16；`P-Tuning`部分，采用fp32
+        4. QLoRA
+    3. 内存占用
         - 激活函数占大头
             - 以`bert-base`为例，model占用2%，optimizer占用10%，激活函数占用87.6%
-            - 解决方式: 时间换空间，激活函数重演(rematerialization)
-    6. 模型并行
+            - 解决方式: 时间换空间，激活函数重演(rematerialization) 或者常见的 梯度检查点(gradient checkpoint)
+    4. 多卡训练
         - 数据并行 (Data Parallelism)
-        - 张量并行
-        - 流水线并行
+        - 模型并行
+            1. 简单的模型并行
+            2. 张量并行 (Megatron-LM)
+            3. 流水线并行 (Gpipe)
         - 优化器并行 (ZeRO)
-    7. 训练稳定性
-    8. 模型量化 (quantization)
+    5. 训练稳定性
 
 2. 模型汇总
 |模型|发布方|参数量|备注|
