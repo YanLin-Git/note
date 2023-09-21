@@ -28,9 +28,9 @@
     4. 多卡训练
         - 数据并行 (Data Parallelism)
         - 模型并行
-            1. 简单的模型并行
-            2. 张量并行 (Megatron-LM)
-            3. 流水线并行 (Gpipe)
+            1. 简单的模型并行 (分层)
+            2. 流水线并行 (Gpipe)
+            3. 张量并行 (Megatron-LM)
         - 优化器并行 (ZeRO)
     5. 训练稳定性
 

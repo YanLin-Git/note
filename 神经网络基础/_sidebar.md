@@ -12,6 +12,7 @@
     - [LSTM](神经网络基础/LSTM.md)
     - [CNN](神经网络基础/CNN.md)
     - [transformer](神经网络基础/transformer.md)
+    - [trainer](神经网络基础/trainer.md)
 - [自然语言处理](自然语言处理/)
 - [其他](其他/)
     
