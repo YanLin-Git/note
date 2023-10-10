@@ -9,6 +9,7 @@
     - [LLM](自然语言处理/LLM/)
         - [instructGPT](自然语言处理/LLM/instructGPT.md)
         - [peft](自然语言处理/LLM/peft.md)
+        - [混合精度训练](自然语言处理/LLM/混合精度训练.md)
         - [langchain](自然语言处理/LLM/langchain.md)
         - [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
         - [ChatGLM](自然语言处理/LLM/ChatGLM.md)

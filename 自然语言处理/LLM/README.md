@@ -3,9 +3,10 @@
 - 目录
     1. [instructGPT](自然语言处理/LLM/instructGPT.md)
     2. [peft](自然语言处理/LLM/peft.md)
-    3. [langchain](自然语言处理/LLM/langchain.md)
-    4. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
-    5. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
+    3. [混合精度训练](自然语言处理/LLM/混合精度训练.md)
+    4. [langchain](自然语言处理/LLM/langchain.md)
+    5. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
+    6. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
 
 1. **todo.list**
     1. Positional Embedding
@@ -16,11 +17,9 @@
             1. transformer-XL
             2. ALiBi (BLOOM、MPT采用)
             3. RoPE (旋转式编码，绝对编码实现相对编码， PaLM、GLM-130B、LLaMa采用)
-    2. 混合精度训练 & 模型量化(quantization)
-        1. Apex的amp
-        2. bitsandbytes
-        3. 例如ChatGLM2的P-Tuning，采用这种方式: `模型主体`部分，采用fp16；`P-Tuning`部分，采用fp32
-        4. QLoRA
+    2. 模型量化(quantization)
+        1. bitsandbytes
+        2. QLoRA
     3. 内存占用
         - 激活函数占大头
             - 以`bert-base`为例，model占用2%，optimizer占用10%，激活函数占用87.6%
@@ -45,7 +44,7 @@
 |GLM|清华||https://github.com/THUDM/GLM|
 |ChatGLM-6B|清华||https://github.com/THUDM/ChatGLM-6B|
 |ChatGLM2-6B|清华||https://github.com/THUDM/ChatGLM2-6B|
-|instructGPT|openAI||`paper`, chatGPT介绍中说，使用instructGPT论文里的方法|
+|instructGPT|openAI|||
 |toolformer|||`paper`, 使得LLM能够使用各种工具|
 |PaLM|google|||
 |Chinchilla|DeepMind|||
