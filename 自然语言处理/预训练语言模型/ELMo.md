@@ -3,7 +3,7 @@
 **word2vec**可以对每个单词进行编码，但无法解决多义词问题。例如"bank"，有两个常用含义，但是在**word2vec**中，只对应一行向量。  
 **ELMo**的想法是根据上下文，去动态调整 word embedding
 
-- paper: https://arxiv.org/pdf/1802.05365v2.pdf
+- paper: https://arxiv.org/abs/1802.05365v2
 - 网络结构
     1. 第一层，word embedding，捕获`单词特征`
     2. 第二层，两个方向的LSTM，捕获`语法特征`

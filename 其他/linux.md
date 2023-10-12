@@ -20,3 +20,8 @@
     - `-z`，使用gzip压缩算法
     - `-v`，在屏幕上显示详细信息
     - `-f`，后面紧跟着 文件名，(-f参数一定要写在最后)
+
+## 5、查看CPU个数
+1. 有几个物理CPU `cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l`
+2. 每个CPU中有几个核 `cat /proc/cpuinfo | grep "cpu cores" | uniq`
+3. 有几个逻辑CPU `cat /proc/cpuinfo | grep "processor" | wc -l`

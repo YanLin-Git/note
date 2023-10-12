@@ -2,22 +2,22 @@
 
 - 目录
     1. [x] NNLM(2003) [paper](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
-    2. [x] word2vec(2013) [paper](https://proceedings.neurips.cc/paper_files/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
-    3. [x] ELMo(2018) [paper](https://arxiv.org/pdf/1802.05365v2.pdf)
+    2. [x] word2vec(2013) [paper](https://arxiv.org/abs/1310.4546v1)
+    3. [x] ELMo(2018) [paper](https://arxiv.org/abs/1802.05365v2)
     4. [ ] GPT系列
         - [x] GPT(2018.6) [paper](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)
         - [x] GPT-2(2019.2) [paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)
-        - [x] GPT-3(2020.7) [paper](https://arxiv.org/pdf/2005.14165v4.pdf)
-        - [ ] GPT-4(2023.3) [paper](https://arxiv.org/pdf/2303.08774v3.pdf)
-    5. [x] Bert(2018.10) [paper](https://arxiv.org/pdf/1810.04805v2.pdf)
-    6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/pdf/1907.11692v1.pdf)
-    7. [x] ALBERT(2020.2) [paper](https://arxiv.org/pdf/1909.11942v6.pdf)
-    8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/pdf/2003.10555v1.pdf)
-    9. [ ] MASS(2019.5) [paper](https://arxiv.org/pdf/1905.02450v5.pdf)
-    10. [ ] BART(2019.10) [paper](https://arxiv.org/pdf/1910.13461v1.pdf)
-    11. [x] T5(2020.7) [paper](https://arxiv.org/pdf/1910.10683v3.pdf)
-    12. [ ] UniLM(2019.10) [paper](https://arxiv.org/pdf/1905.03197v3.pdf)
-    13. [ ] XLNet(2020.1) [paper](https://arxiv.org/pdf/1906.08237v2.pdf)
+        - [x] GPT-3(2020.5) [paper](https://arxiv.org/abs/2005.14165v4)
+        - [ ] GPT-4(2023.3) [paper](https://arxiv.org/abs/2303.08774v3)
+    5. [x] Bert(2018.10) [paper](https://arxiv.org/abs/1810.04805v2)
+    6. [x] RoBERTa(2019.7) [paper](https://arxiv.org/abs/1907.11692v1)
+    7. [x] ALBERT(2019.9) [paper](https://arxiv.org/abs/1909.11942v6)
+    8. [ ] ELECTRA(2020.3) [paper](https://arxiv.org/abs/2003.10555v1)
+    9. [ ] MASS(2019.5) [paper](https://arxiv.org/abs/1905.02450v5)
+    10. [ ] BART(2019.10) [paper](https://arxiv.org/abs/1910.13461v1)
+    11. [x] T5(2019.10) [paper](https://arxiv.org/abs/1910.10683v4)
+    12. [ ] UniLM(2019.5) [paper](https://arxiv.org/abs/1905.03197v3)
+    13. [ ] XLNet(2019.6) [paper](https://arxiv.org/abs/1906.08237v2)
 
 
 > 参考: https://zhuanlan.zhihu.com/p/254821426  

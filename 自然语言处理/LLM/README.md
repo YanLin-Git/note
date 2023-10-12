@@ -35,7 +35,7 @@
     1. [peft](自然语言处理/LLM/peft.md)
         - 模型主体部分的参数不变，只添加少量adapter，通过微调这部分参数，来达到微调整个模型的效果
         - 目前常用的两种方式
-            1. lora
+            1. lora [paper](https://arxiv.org/abs/2106.09685)
             2. P-Tuning v2
     2. QLoRA
         - 两种方式的融合: `Quantization` + peft中的`lora`方式
@@ -80,7 +80,7 @@
 
     |模型|发布方|参数量|备注|
     |---|---|---|---|
-    |LLaMA|Meta|65B|[paper](https://arxiv.org/pdf/2302.13971.pdf)|
+    |LLaMA|Meta|65B|[paper](https://arxiv.org/abs/2302.13971v1)|
     |LLaMA2|Meta||[paper](https://ai.meta.com/research/publications/llama-2-open-foundation-and-fine-tuned-chat-models/)|
     |Alpaca|斯坦福|7B|效果可媲美175B的LLM|
     |vicuna||||
