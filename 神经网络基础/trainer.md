@@ -68,8 +68,8 @@ class MyTrainer(Trainer):
 ```python
 class Trainer:
     def train():
-        self._move_model_to_device(self.model, args.device) # 将模型放置在GPU、TPU上
         self._load_from_checkpoint(resume_from_checkpoint) # 加载之前已经训练的checkpoint
+        self._move_model_to_device(self.model, args.device) # 将模型放置在GPU、TPU上
         self._inner_training_loop(): # 真正开始训练
             train_dataloader = self.get_train_dataloader() # 即DataLoader(Dataset, batch_size, collate_fn)
             create_optimizer_and_scheduler() # 创建optimizer、scheduler
