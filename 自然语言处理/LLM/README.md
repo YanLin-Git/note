@@ -4,10 +4,11 @@
     1. [混合精度训练](自然语言处理/LLM/混合精度训练.md)
     2. [模型量化](自然语言处理/LLM/模型量化.md)
     3. [peft](自然语言处理/LLM/peft.md)
-    4. [instructGPT](自然语言处理/LLM/instructGPT.md)
-    5. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
-    6. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
-    7. [langchain](自然语言处理/LLM/langchain.md)
+    4. [并行训练](自然语言处理/LLM/并行训练.md)
+    5. [instructGPT](自然语言处理/LLM/instructGPT.md)
+    6. [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
+    7. [ChatGLM](自然语言处理/LLM/ChatGLM.md)
+    8. [langchain](自然语言处理/LLM/langchain.md)
 
 1. 如何降低资源占用？
     > 随着模型规模扩大，需要寻找各种方法来减少资源需求
@@ -20,7 +21,7 @@
         |---|---|---|
         |FP32|float32|全精度(4bytes)|
         |FP16|float16|半精度(2bytes)|
-        |BP16|bfloat16|半精度(2bytes)|
+        |BF16|bfloat16|半精度(2bytes)|
         |...|||
     2. [混合精度训练](自然语言处理/LLM/混合精度训练.md)
         - 部分操作使用FP16，部分操作使用FP32
@@ -56,12 +57,12 @@
     <details>
     <summary><b>四、多卡训练</b></summary>
 
-    1. 数据并行 (Data Parallelism)
-    2. 模型并行
+    1. [x] 数据并行 (Data Parallelism)
+    2. [ ] 模型并行
         1. 简单的模型并行 (分层)
         2. 流水线并行 (Gpipe)
         3. 张量并行 (Megatron-LM)
-    3. 优化器并行 (ZeRO)
+    3. [ ] 优化器并行 (ZeRO)
 
     </details>
 

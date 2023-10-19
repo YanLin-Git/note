@@ -10,6 +10,7 @@
         - [混合精度训练](自然语言处理/LLM/混合精度训练.md)
         - [模型量化](自然语言处理/LLM/模型量化.md)
         - [peft](自然语言处理/LLM/peft.md)
+        - [并行训练](自然语言处理/LLM/并行训练.md)
         - [instructGPT](自然语言处理/LLM/instructGPT.md)
         - [Chinese-LLaMA-Alpaca](自然语言处理/LLM/Chinese-LLaMA-Alpaca.md)
         - [ChatGLM](自然语言处理/LLM/ChatGLM.md)
