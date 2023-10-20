@@ -60,9 +60,9 @@
     1. [x] 数据并行 (Data Parallelism)
     2. [ ] 模型并行
         1. 简单的模型并行 (分层)
-        2. 流水线并行 (Gpipe)
-        3. 张量并行 (Megatron-LM)
-    3. [ ] 优化器并行 (ZeRO)
+        2. 流水线并行 [Gpipe](https://arxiv.org/abs/1811.06965v5)
+        3. 张量并行 [Megatron-LM](https://arxiv.org/abs/1909.08053v4)
+    3. [ ] 优化器并行 [ZeRO](https://arxiv.org/abs/1910.02054v3)
 
     </details>
 
