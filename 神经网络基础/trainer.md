@@ -67,14 +67,17 @@ class MyTrainer(Trainer):
 ## 5、huggingface中的Trainer更多功能
 ```python
 class Trainer:
+    def __init__(): # 一些初始化准备工作
+        self._move_model_to_device(model, args.device) # 将模型放在相应设备
     def train():
         self._load_from_checkpoint(resume_from_checkpoint) # 加载之前已经训练的checkpoint
-        self._move_model_to_device(self.model, args.device) # 将模型放置在GPU、TPU上
         self._inner_training_loop(): # 真正开始训练
-            train_dataloader = self.get_train_dataloader() # 即DataLoader(Dataset, batch_size, collate_fn)
-            create_optimizer_and_scheduler() # 创建optimizer、scheduler
-            self.model.gradient_checkpointing_enable() # 使模型支持gradient_checkpoint
-            model = self._wrap_model(self.model_wrapped) # 使模型支持并行训练
+            train_dataloader = self.get_train_dataloader() # self.accelerator.prepare(DataLoader(train_dataset, batch_size, collate_fn))
+            self.create_optimizer_and_scheduler(num_training_steps=max_steps)  # 创建optimizer、scheduler
+            self.model.gradient_checkpointing_enable() # 开启gradient_checkpoint
+            model = self._wrap_model(self.model_wrapped) # 按照配置，对模型进行相应的封装。例如nn.DataParallel、apex.amp等
+            model, self.optimizer = self.accelerator.prepare(self.model, self.optimizer)
+            self._load_optimizer_and_scheduler(resume_from_checkpoint) # 加载之前已经训练的checkpoint
             for epoch in range(num_train_epochs):
                 epoch_iterator = train_dataloader
                 for step, inputs in enumerate(epoch_iterator):
@@ -82,11 +85,11 @@ class Trainer:
                     # 核心训练代码
                     tr_loss_step = self.training_step(model, inputs):
                         model.train() # 对应model.eval()
-                        inputs = self._prepare_inputs(inputs) # 将inputs转换为tensor，并放置在GPU、TPU上
+                        inputs = self._prepare_inputs(inputs) # 将inputs中的tensor，放置在相应设备上
                         loss = self.compute_loss(model, inputs):
                             outputs = model(**inputs) # 前向传播、计算损失
                         self.accelerator.backward(loss) # 反向传播
-                    nn.utils.clip_grad_norm_() # 梯度裁剪
+                    self.accelerator.clip_grad_norm_(model.parameters(), max_grad_norm) # 梯度裁剪
                     self.optimizer.step() # 参数更新
                     self.lr_scheduler.step() # 学习率更新
                     model.zero_grad() # 梯度清零
