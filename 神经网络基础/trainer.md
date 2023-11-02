@@ -54,14 +54,21 @@ class Trainer:
 class MyTrainer(Trainer):
     def compute_loss(self, model: BertModel, inputs: Dict[str, torch.Tensor], return_outputs=False,):
 
-        # 前向传播
-        source_sentence_embeddings = model(inputs['text1_input_ids'], inputs['text1_attn_masks'])
-        target_sentence_embeddings = model(inputs['text2_input_ids'], inputs['text2_attn_masks'])
-        y_pred = nn.functional.cosine_similarity(source_sentence_embeddings, target_sentence_embeddings)
+        # 读取数据
+        text1_input_ids = inputs['text1_input_ids']
+        text1_attn_masks = inputs['text1_attn_masks']
+        text2_input_ids = inputs['text2_input_ids']
+        text2_attn_masks = inputs['text2_attn_masks']
+        labels = inputs['labels']
+
+        # 正向传播
+        # 输入两句话，计算它们的相似度
+        y_preds = model(text1_input_ids, text1_attn_masks, text2_input_ids, text2_attn_masks)
 
         # 计算损失
-        loss = loss_fun(y_pred, inputs['labels'])
-        return loss
+        loss = self.loss_fun(y_preds, labels) 
+
+        return (loss, (loss, y_preds)) if return_outputs else loss
 ```
 
 ## 5、huggingface中的Trainer更多功能
