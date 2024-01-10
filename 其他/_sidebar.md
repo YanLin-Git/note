@@ -7,6 +7,7 @@
     - [Git](其他/Git.md)
     - [SVN](其他/SVN.md)
     - [linux常用命令](其他/linux.md)
+    - [Milvus](其他/Milvus.md)
     - [markdown](其他/markdown.md)
     - [LaTex](其他/LaTex.md)
     - [mermaid](其他/mermaid.md)
