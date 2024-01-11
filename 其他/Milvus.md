@@ -67,12 +67,12 @@ from pymilvus import Collection
 # 数据示例
 data = [
     ["sanguo", 'shuihu'], # book_name
-    [[0.2, 0,5], [0.9, 0.1]] # book_emb
+    [[0.2, 0.5], [0.9, 0.1]] # book_emb
 ]
 
 # 插入数据
 collection = Collection("book") # 上一步创建好的集合
-mr = collection.insert(data)
+collection.insert(data)
 
 # 插入数据后调用
 # 数据可能还在缓存区，需要手动落盘
@@ -81,7 +81,7 @@ collection.flush()
 
 ## 5. 为向量建索引
 ```python
-from pymilvus import Collection, utility
+from pymilvus import Collection
 
 index_params = {
   "metric_type":"IP", # 相似度指标: L2(欧几里得距离)、IP(内积)
@@ -117,8 +117,7 @@ results = collection.search(
 	param=search_params,
 	limit=10, # topk
 	expr=None,
-	output_fields=['book_name'] # 返回的字段
-	consistency_level="Strong"
+	output_fields=['book_name'], # 返回的字段
 )
 
 # 释放集合，减少内存消耗
