@@ -62,7 +62,7 @@
 
 4. 几个模型规模对比:
 
-$$ ELMo \to GPT \to Bert \to GPT-2 \to RoBERTa \to GPT-3 $$
+$$ ELMo \longrightarrow GPT \longrightarrow Bert \longrightarrow GPT-2 \longrightarrow RoBERTa \longrightarrow GPT-3 $$
 
 |模型|数据集|词量|subword|模型|参数量|备注|
 |---|---|---|---|---|---|---|
