@@ -14,6 +14,7 @@
 2. 拉取branch代码(checkout) `svn checkout 自己的branch地址 本地目录`
 3. 代码开发
 4. 提交，先更新一下: `svn update`，然后提交: `svn commit -m '修改日志'`
+5. 删除分支 `svn remove -m '删除日志' 自己的branch地址`
 
 ## 三、将branch代码合并到trunk
 1. 拉取trunk代码 `svn checkout trunk地址 本地trunk目录`

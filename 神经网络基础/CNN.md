@@ -43,22 +43,22 @@
     nn.Conv1d(in_channels=10, out_channels=5, kernel_size=3)
 
     # 二维卷积
-    nn.Conv2d(in_channels = 1, out_channels = 1, kernel_size=(3, 5), padding=(0, 1), stride=(3, 4))
+    nn.Conv2d(in_channels=1, out_channels=1, kernel_size=(3, 5), padding=(0, 1), stride=(3, 4))
 
 
-    # kerner为方阵时，两种方式等价:
-    nn.Conv2d(in_channels = 1, out_channels = 1, kernel_size=(3, 3), padding=(0, 1), stride=(3, 4))
-    nn.Conv2d(in_channels = 1, out_channels = 1, kernel_size=3, padding=(0, 1), stride=(3, 4))
+    # kernel为方阵时，两种方式等价:
+    nn.Conv2d(in_channels=1, out_channels=1, kernel_size=(3, 3), padding=(0, 1), stride=(3, 4))
+    nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, padding=(0, 1), stride=(3, 4))
     ```
 
 2. 池化层
     ```python
     # 一维
-    nn.MaxPool1d(pool_size = 5)
+    nn.MaxPool1d(pool_size=5)
 
     # 二维
-    nn.MaxPool2d(pool_size = 3, padding=1, stride=2)
-    nn.MaxPool2d(pool_size = (3,3), padding=1, stride=2)
+    nn.MaxPool2d(pool_size=3, padding=1, stride=2)
+    nn.MaxPool2d(pool_size=(3,3), padding=1, stride=2)
     ```
 
 ## 3. 应用实例
