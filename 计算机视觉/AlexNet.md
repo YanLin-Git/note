@@ -1,4 +1,5 @@
 # AlexNet
+
 - 概览
     > LeNet-->AlexNet
 
@@ -37,11 +38,12 @@
                 nn.Linear(4096, 4096),
                 nn.ReLU(),
                 nn.Dropout(0.5),
-                
                 nn.Linear(4096, 10),
             )
 
         def forward(self, img):
+            # img: (batch_size, 1, 224, 224)
+            #      (batch_size, channel, height, width)
             feature = self.conv(img)
             output = self.fc(feature.view(img.shape[0], -1))
             return output

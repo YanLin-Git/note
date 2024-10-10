@@ -9,7 +9,6 @@
     |卷积窗口|5x5<br>5x5|
     |激活函数|sigmoid|
 
-
 - 代码实现
     ```python
     class LeNet(nn.Module):

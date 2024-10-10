@@ -6,5 +6,6 @@
 - [计算机视觉](计算机视觉/)
     - [LeNet](计算机视觉/LeNet.md)
     - [AlexNet](计算机视觉/AlexNet.md)
+    - [VGG](计算机视觉/VGG.md)
 - [LLM](LLM/)
 - [其他](其他/)
