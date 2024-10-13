@@ -17,7 +17,7 @@
         def __init__(self):
             super(AlexNet, self).__init__()
             self.conv = nn.Sequential(
-                nn.Conv2d(1, 96, 11, 4),       # (bs, 1, 224, 224)--->(bs, 96, 54, 54)
+                nn.Conv2d(3, 96, 11, 4),       # (bs, 3, 224, 224)--->(bs, 96, 54, 54)
                 nn.ReLU(),
                 nn.MaxPool2d(3, 2),            # (bs, 96, 54, 54)--->(bs, 96, 26, 26)
                 nn.Conv2d(96, 256, 5, 1, 2),   # (bs, 96, 26, 26)--->(bs, 256, 26, 26)
@@ -38,11 +38,11 @@
                 nn.Linear(4096, 4096),
                 nn.ReLU(),
                 nn.Dropout(0.5),
-                nn.Linear(4096, 10),
+                nn.Linear(4096, 1000),
             )
 
         def forward(self, img):
-            # img: (batch_size, 1, 224, 224)
+            # img: (batch_size, 3, 224, 224)
             #      (batch_size, channel, height, width)
             feature = self.conv(img)
             output = self.fc(feature.view(img.shape[0], -1))
