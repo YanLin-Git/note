@@ -10,7 +10,8 @@
 
 - 示意图
     > 2个`3x3`的卷积核，替代`5x5`的卷积核  
-    > ![vgg_block](jpegs/vgg_block.jpg)
+    
+    ![vgg_block](jpegs/vgg_block.jpg)
 
 - 代码实现
     ```python
