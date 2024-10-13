@@ -8,5 +8,6 @@
     - [AlexNet](计算机视觉/AlexNet.md)
     - [VGG](计算机视觉/VGG.md)
     - [GoogLeNet](计算机视觉/GoogLeNet.md)
+    - [ResNet](计算机视觉/ResNet.md)
 - [LLM](LLM/)
 - [其他](其他/)

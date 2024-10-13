@@ -33,6 +33,7 @@
     ```
 
 ## 二、GoogLeNet模型
+
 - 主体卷积部分使用5个block, 分别来看看
 - 代码实现
     ```python 
@@ -81,8 +82,8 @@
             # img: (batch_size, 3, 224, 224)
             #      (batch_size, channel, height, width)
             feature = self.conv(img)                                        # (bs, 3, 224, 224)-->(bs, 1024, 7, 7)
-            feature = F.avg_pool2d(feature, kernel_size=feature.shape[2:])  # (bs, 1024, 7, 7)-->(bs, 1024, 1)
-            feature = feature.view(img.shape[0], -1)                        # (bs, 1024, 1)-->(bs, 1024)
+            feature = F.avg_pool2d(feature, kernel_size=feature.shape[2:])  # (bs, 1024, 7, 7)-->(bs, 1024, 1, 1)
+            feature = feature.view(img.shape[0], -1)                        # (bs, 1024, 1, 1)-->(bs, 1024)
             output = self.fc(feature)                                       # (bs, 1024)-->(bs, 1000)
             return output
     ```
