@@ -7,3 +7,4 @@
 |[VGG](计算机视觉/VGG.md)|`ILSVRC 2014`中第二名，提出可以重复使用简单的基础块，来构建深度网络|
 |[GoogLeNet](计算机视觉/GoogLeNet.md)|`ILSVRC 2014`中胜出，实现了一个**Inception块**|
 |[ResNet](计算机视觉/ResNet.md)|`ILSVRC 2015`胜出，使用了**跳跃链接**，**批量归一化**(batch norm)|
+|[yolo](计算机视觉/yolo.md)|单阶段的目标检测网络|
