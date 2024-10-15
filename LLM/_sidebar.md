@@ -13,5 +13,6 @@
     - [Chinese-LLaMA-Alpaca](LLM/Chinese-LLaMA-Alpaca.md)
     - [ChatGLM](LLM/ChatGLM.md)
     - [langchain](LLM/langchain.md)
+- [多模态](多模态/)
 - [其他](其他/)
     

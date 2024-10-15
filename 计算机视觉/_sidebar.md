@@ -11,4 +11,5 @@
     - [ResNet](计算机视觉/ResNet.md)
     - [yolo](计算机视觉/yolo.md)
 - [LLM](LLM/)
+- [多模态](多模态/)
 - [其他](其他/)
