@@ -34,7 +34,34 @@
 
 ## 二、损失函数
 
-1. yolov5
-    > todo
-2. yolov8
-    > 参考: https://www.vectorexplore.com/tech/computer-vision/yolov8/anchor-free.html
+### yolov5
+
+> 参考代码: https://github.com/ultralytics/yolov5/blob/master/utils/loss.py
+
+1. 边界框回归，使用CIoU Loss
+    ```python
+    # pxy为预测的边框中心坐标
+    # pwh为预测的边框宽、高
+    # tbox[i] 为实际的边框
+    pxy = pxy.sigmoid() * 2 - 0.5
+    pwh = (pwh.sigmoid() * 2) ** 2 * anchors[i]
+    pbox = torch.cat((pxy, pwh), 1)  # predicted box
+    iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
+    lbox += (1.0 - iou).mean()  # iou loss
+    ```
+2. 边界框的分类，使用交叉熵(BCE Loss)
+    ```python
+    # pcls为预测的类别
+    # t为实际的类别
+    lcls += self.BCEcls(pcls, t)  # BCE
+    ```
+3. 边界框的置信度，使用交叉熵(BCE Loss)
+    ```python
+    tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj, 初始化为0
+    tobj[b, a, gj, gi] = iou  # 上面已计算出的CIoU, 作为target
+    obji = self.BCEobj(pi[..., 4], tobj) # BCE
+    ```
+
+### yolov8
+
+> 参考: https://www.vectorexplore.com/tech/computer-vision/yolov8/anchor-free.html
