@@ -36,7 +36,7 @@
 
 ### yolov5
 
-> 参考代码: https://github.com/ultralytics/yolov5/blob/master/utils/loss.py
+> 参考代码: https://github.com/ultralytics/yolov5/blob/master/utils/loss.ComputeLoss
 
 1. 边界框回归，使用CIoU Loss
     ```python

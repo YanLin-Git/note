@@ -1,9 +1,9 @@
 
-1. 多模态 (文-->图)
+1. 文-->图
     1. stable-diffusion
         > Hugging Face 地址: https://huggingface.co/stabilityai/stable-diffusion-3-medium
 
-2. 多模态 (图-->文)
+2. 图-->文
     > 参考链接: https://zhuanlan.zhihu.com/p/653902791
 
     |模型|文本编码|图像编码|图文结合部分|训练模块|
