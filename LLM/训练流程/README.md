@@ -4,7 +4,7 @@
 1. 训练阶段
     - [instructGPT](LLM/训练流程/instructGPT.md)介绍了LLM训练的3个阶段
         <details>
-        <summary><b>3个阶段</b></summary>
+        <summary>3个阶段</summary>
 
         1. 预训练
         2. SFT
@@ -15,7 +15,7 @@
 2. 训练方式
     - 根据模型大小、手里的显卡资源，可以选择不同的训练方式
         <details>
-        <summary><b>几种训练方式</b></summary>
+        <summary>几种训练方式</summary>
 
         1. 全参数微调
         2. 部分参数微调
