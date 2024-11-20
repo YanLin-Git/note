@@ -8,5 +8,6 @@
     - [降低资源占用](LLM/降低资源占用/)
     - [训练流程](LLM/训练流程/)
     - [LLM的应用](LLM/LLM应用/)
+        - [langchain](LLM/LLM应用/langchain.md)
 - [多模态](多模态/)
 - [其他](其他/)

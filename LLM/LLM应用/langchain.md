@@ -2,7 +2,7 @@
 > 最近刚了解清华推出的[LangChain+ChatGLM](https://github.com/imClumsyPanda/langchain-ChatGLM)，可用来做智能问答，学习一下，整理了个人笔记
 
 ## 1. 流程图
-![langchain+chatglm.png](jpgs/langchain+chatglm.png) 
+![langchain+chatglm.png](../jpgs/langchain+chatglm.png) 
 - 流程简介:
     1. 构造本地知识库，对应上图中的`1-2-3-4-5-6`
     2. 根据用户的query，查询知识库，对应上图中的`8-9-10-11-12`

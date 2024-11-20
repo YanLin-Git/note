@@ -4,7 +4,7 @@
 ## 1、ChatGLM2模型结构
 - `todo`
 
-## 2、在120G内存，24G显存上，对ChatGLM2微调
+## 2、在`4090`上，对ChatGLM2微调
 > 1. 准备数据集，直接在[Tsinghua Cloud](https://cloud.tsinghua.edu.cn/f/b3f119a008264b1cabd1/?dl=1)下载
 > 2. 拉取脚本、模型
 
@@ -63,7 +63,7 @@
 - 输入: `类型#上衣\*材质#牛仔布\*颜色#白色\*风格#简约\*图案#刺绣\*衣样式#外套\*衣款式#破洞`
 - 输出效果: `这款牛仔外套采用白底白字的刺绣图案，简约的白色与牛仔的搭配，让整体看起来既大气又随性。胸前的小破洞设计，则使这款外套显得更加时尚，同时也增添了一份俏皮感。`
 
-## 3、在13G内存，16G显存上，对ChatGLM2微调
+## 3、在`P100`(Kaggle)上，对ChatGLM2微调
 - 没有资源时，可利用kaggle，熟悉一遍流程
 > [官网](https://www.heywhale.com/mw/project/64984a7b72ebe240516ae79c)中介绍，最低只需`6.7G显存`即可进行`P-Tuning v2`微调，于是在kaggle上尝试一遍
 > 1. 这里有介绍视频: [Kaggle免费使用GPU攻略](https://www.bilibili.com/video/BV1oa411u7uR/?spm_id_from=333.788&vd_source=6f83dfd98e9e60e0535ab4b15f5c8e50)
@@ -184,7 +184,7 @@ print(response)
     
     </details>
 
-### 3.3 微调后，效果对比
+### 3.3 微调后，查看效果
 
 <details>
     <summary><b>示例代码:</b></summary>
