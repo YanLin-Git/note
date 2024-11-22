@@ -2,38 +2,20 @@
 
 
 1. 训练阶段
-    - [instructGPT](LLM/训练流程/instructGPT.md)介绍了LLM训练的3个阶段
-        <details>
-        <summary>3个阶段</summary>
-
-        1. 预训练
-        2. SFT
-        3. RLHF
-
-        </details>
+    - LLM训练的3个阶段：`预训练`、`指令微调`、`偏好数据训练`
+    - [instructGPT](LLM/训练流程/instructGPT.md)介绍了他们`指令微调`、`偏好数据训练`两个阶段的做法
 
 2. 训练方式
-    - 根据模型大小、手里的显卡资源，可以选择不同的训练方式
-        <details>
-        <summary>几种训练方式</summary>
-
-        1. 全参数微调
-        2. 部分参数微调
-        3. lora
-        4. QLoRA
-        5. P-Tuning
-
-        </details>
-
+    - 根据模型大小、手里的显卡资源，可以选择不同的训练方式：`全参数微调`、`P-Tuning`、`lora`、`QLoRA`等
     - 几个实例
 
         ||full|P-Tuning|lora|
         |---|---|---|---|
         |预训练|||2. [Chinese-LLaMA-Alpaca](LLM/训练流程/Chinese-LLaMA-Alpaca.md)|
-        |SFT||1. [ChatGLM](LLM/训练流程/ChatGLM.md)|2. [Chinese-LLaMA-Alpaca](LLM/训练流程/Chinese-LLaMA-Alpaca.md)|
-        |RLHF||||
+        |指令微调||1. [ChatGLM](LLM/训练流程/ChatGLM.md)|2. [Chinese-LLaMA-Alpaca](LLM/训练流程/Chinese-LLaMA-Alpaca.md)|
+        |偏好数据训练||||
 
 3. 训练算法
-    - 目前在整理`RLHF`阶段的几个算法
+    - 目前在整理`偏好数据训练`阶段的几个算法
         1. [PPO](LLM/训练流程/PPO.md)
         2. [DPO](LLM/训练流程/DPO.md)
