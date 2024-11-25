@@ -12,7 +12,7 @@
     2. `RLHF`
         - `RM`训练好之后，固定 $r_{\phi}$，再使用`PPO`算法进行强化学习，优化目标 $\textcircled{2}$:
         $$
-        \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} \{ \pi_{\theta}(y|x) || \pi_{ref}(y|x) \} \qquad (2)
+        \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} [ \pi_{\theta}(y|x) || \pi_{ref}(y|x) ] \qquad (2)
         $$
 
 ## DPO的推导过程
@@ -23,7 +23,7 @@
 1. 首先对(2)式进一步推导
     $$
     \begin{aligned}
-    & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} \{ \pi_{\theta}(y|x) || \pi_{ref}(y|x) \} & (2) \\
+    & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} [ \pi_{\theta}(y|x) || \pi_{ref}(y|x) ] & (2) \\
     = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta \sum\limits_{x \sim D, y \sim \pi_{\theta}(y|x)} \pi_{\theta}(y|x) \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{代入KL散度计算公式} \\
     = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta E_{x \sim D, y \sim \pi_{\theta}(y|x)} \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{转化为期望} \\
     = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} \left[ r_{\phi}(x,y) - \beta \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} \right]  & \text{即 instructGPT论文中的公式} \\
@@ -76,10 +76,42 @@ $$
 <summary><b>代码示例</b></summary>
 
 ```python
-# todo
+def dpo_loss(
+    beta,
+    policy_chosen_logps: torch.FloatTensor,
+    policy_rejected_logps: torch.FloatTensor,
+    reference_chosen_logps: torch.FloatTensor,
+    reference_rejected_logps: torch.FloatTensor,
+) -> torch.FloatTensor:
+    """Compute the DPO loss for a batch of policy and reference model log probabilities.
+
+    Args:
+        policy_chosen_logps: Log probabilities of the policy model for the chosen responses. Shape: (batch_size,)
+        policy_rejected_logps: Log probabilities of the policy model for the rejected responses. Shape: (batch_size,)
+        reference_chosen_logps: Log probabilities of the reference model for the chosen responses. Shape: (batch_size,)
+        reference_rejected_logps: Log probabilities of the reference model for the rejected responses. Shape: (batch_size,)
+
+    Returns:
+        The losses tensor contains the DPO loss for each example in the batch.
+    """
+
+    pi_logratios = policy_chosen_logps - policy_rejected_logps
+    ref_logratios = reference_chosen_logps - reference_rejected_logps
+    logits = pi_logratios - ref_logratios
+    losses = -F.logsigmoid(beta * logits)  # 转化为最小值问题，所以前面加负号
+
+    return losses
 ```
 
 </details>
 
 ## DPO的梯度更新
-- todo
+- 为了进一步理解DPO，我们对上面的(6)式求导
+$$
+\begin{aligned}
+& \nabla_{\theta} \quad E_{(x,y_w,y_l) \sim D} \left\{log\ \sigma \left[ \underbrace{ \beta \log \frac {\pi_{\theta}(y_w|x)} {\pi_{ref}(y_w|x)}}_{\hat{r}_{\theta}(x, y_w) } - \underbrace{ \beta \log \frac {\pi_{\theta}(y_l|x)} {\pi_{ref}(y_l|x)}}_{\hat{r}_{\theta}(x, y_l) } \right] \right\} \\
+= \quad & E_{(x,y_w,y_l) \sim D} \quad \underbrace{ \nabla_{\theta} \left\{log\ \sigma \left[ \hat{r}_{\theta}(x, y_w) - \hat{r}_{\theta}(x, y_l) \right] \right\} }_{\nabla \log \sigma (x) } \nabla_{\theta} [\beta \log \pi_{\theta}(y_w|x) - \beta \log \pi_{\theta}(y_l|x)] \\
+= \quad & E_{(x,y_w,y_l) \sim D} \quad \underbrace{ \sigma \left[ \hat{r}_{\theta}(x, y_l) - \hat{r}_{\theta}(x, y_w) \right] }_{\sigma(-x)} \nabla_{\theta} [\beta \log \pi_{\theta}(y_w|x) - \beta \log \pi_{\theta}(y_l|x)] \\
+= \quad & \beta E_{(x,y_w,y_l) \sim D} \quad \underbrace{ \sigma \left[ \hat{r}_{\theta}(x, y_l) - \hat{r}_{\theta}(x, y_w) \right] }_{\text{奖励模型出错时，获得更高的权重}} [ \underbrace{ \nabla_{\theta} \log \pi_{\theta}(y_w|x) }_{增大y_w的概率} - \underbrace{ \nabla_{\theta} \log \pi_{\theta}(y_l|x) }_{降低y_l的概率} ] \\
+\end{aligned}
+$$
