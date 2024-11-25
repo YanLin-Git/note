@@ -1,7 +1,7 @@
 # DPO
 
 
-## 回顾instructGPT
+## 一、回顾instructGPT
 
 - [instructGPT](LLM/训练流程/instructGPT.md)中，`偏好数据训练`分为两个阶段
     1. 训练奖励模型`RM`
@@ -15,11 +15,11 @@
         \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} [ \pi_{\theta}(y|x) || \pi_{ref}(y|x) ] \qquad (2)
         $$
 
-## DPO的推导过程
+## 二、DPO的推导过程
 - `PPO`算法比较复杂，而且不够稳定。`DPO`简化了整个训练流程，我们来看看推导过程
     > `PPO`中，先去优化目标 $\textcircled{1}$，再去优化目标 $\textcircled{2}$  
     > `DPO`则通过理论推导，将两个目标 $\textcircled{1}\textcircled{2}$ 一起优化，不再去显式地训练一个奖励模型`RM`
-### 一、先通过目标 $\textcircled{2}$， 寻找 $r_{\phi}$ 与 $\pi_{\theta}$ 之间的关系
+### 2.1 先通过目标 $\textcircled{2}$， 寻找 $r_{\phi}$ 与 $\pi_{\theta}$ 之间的关系
 1. 首先对(2)式进一步推导
     $$
     \begin{aligned}
@@ -63,7 +63,7 @@
     $$
     r_{\phi}(x,y) = \beta \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} + \beta \log Z(x) \qquad (5)
     $$
-### 二、将推导出来的(5)式，代入到目标 $\textcircled{1}$
+### 2.2 将推导出来的(5)式，代入到目标 $\textcircled{1}$
 $$
 \begin{aligned}
 & \max_{\phi} \quad E_{(x,y_w,y_l) \sim D} \{log\ \sigma[r_{\phi}(x, y_w) - r_{\phi}(x, y_l)]\} & (1) \\
@@ -105,7 +105,7 @@ def dpo_loss(
 
 </details>
 
-## DPO的梯度更新
+## 三、DPO的梯度更新
 - 为了进一步理解DPO，我们对上面的(6)式求导
 $$
 \begin{aligned}
