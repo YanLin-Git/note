@@ -4,7 +4,7 @@
     > 用户给出一些`prompt`，有时候模型不能很好地理解用户意图，论文中称`语言模型`与`用户意图`没有对齐
 - 所做的工作可以用这个图来概括:
 
-    ![instructGPT.jpg](../jpgs/instructGPT.jpg) 
+    ![instructGPT.jpg](../jpgs/instructGPT.jpg)
 
 ## 其实就是做了两步微调，`SFT`、`RLHF`，分别来看看:
 
