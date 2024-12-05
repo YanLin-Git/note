@@ -37,6 +37,7 @@
     </details>
 
 4. PG的完整过程如下:
+
     ![PolicyGradient.png](../jpgs/PolicyGradient.png)
 
 ## 二、PPO
@@ -100,12 +101,66 @@ $$
         \approx & E_{(s_t,a_t) \sim \pi_{\theta^\prime}} \left[ \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t) \nabla \log p_\theta(a_t|s_t) \right] & (3) \\
         \end{aligned}
         $$
+
 ### 2.3、反推出`目标函数`
 - 实际更新参数的时候，我们按照上面的(3)式来更新，于是我们就可以从梯度反推**目标函数**
     $$
     \begin{aligned}
     \nabla_\theta & = E_{(s_t,a_t) \sim \pi_{\theta^\prime}} \left[ \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t) \nabla \log p_\theta(a_t|s_t) \right] & (3) \\
     & = E_{(s_t,a_t) \sim \pi_{\theta^\prime}} \left[ \frac {\nabla p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t) \right] & 这里用了公式: \frac {\nabla f(x)} {f(x)} = \nabla \log f(x) \\
-    \Longrightarrow J(\theta) & = E_{(s_t,a_t) \sim \pi_{\theta^\prime}} \left[ \frac { p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t) \right] & 大功告成！！\\
+    \Longrightarrow J(\theta) & = E_{(s_t,a_t) \sim \pi_{\theta^\prime}} \left[ \frac { p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t) \right] & (4) \\
     \end{aligned}
     $$
+
+### 2.4、近端策略优化裁剪PPO-clip
+- 引入重要性采样后，我们计算一次 $A^{\theta^\prime}(s_t, a_t)$，就可以进行多次参数更新
+- 但这样做有个问题，$p_\theta(a_t | s_t)$ 与 $p_{\theta^\prime}(a_t | s_t)$ 不能相差过大，为了解决这个问题，`PPO2`对(4)式做了裁剪
+    1. (4)式可以等价地写为:
+        $$
+        J(\theta) \approx \frac 1 N \sum\limits_{(s_t, a_t)} \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t)
+        $$
+    2. clip
+        $$
+        J_{PPO2}(\theta) \approx \frac 1 N \sum\limits_{(s_t, a_t)} \min \left\{  \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t), clip \left( \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)}, 1-\varepsilon, 1+\varepsilon \right) A^{\theta^\prime}(s_t, a_t) \right\} \quad (5)
+        $$
+> 裁剪算法的意义，推导细节见[参考博客3](https://blog.csdn.net/v_JULY_v/article/details/128965854)
+>   1. $A^{\theta^\prime}(s_t, a_t) > 0$，说明这个动作好，需要增大 $p_\theta(a_t | s_t)$，但不能太大， $\frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)}$ 最大不能超过 $(1+\varepsilon)$
+>   2. $A^{\theta^\prime}(s_t, a_t) < 0$，说明这个动作不好，需减小 $p_\theta(a_t | s_t)$，但不能太小，$\frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)}$ 最小不能低于 $(1-\varepsilon)$
+
+### 2.5、代码实现
+> 为计算(5)式，我们需要提前计算好这3项:
+>    1. $p_\theta(a_t | s_t)$，即输入参数中的 **logprobs**
+>    2. $p_{\theta^\prime}(a_t | s_t)$，即输入参数中的 **old_logprobs**
+>    3. $A^{\theta^\prime}(s_t, a_t)$，即输入参数中的 **advantages**
+
+```python
+class PPOTrainer(BaseTrainer):
+    def loss(
+        self,
+        logprobs: torch.FloatTensor,
+        old_logprobs: torch.FloatTensor,
+        advantages: torch.FloatTensor,
+    ):
+
+        ratio = torch.exp(logprobs - old_logprobs)
+
+        # 转换为最小化问题，因此前面加负号
+        pg_losses = -advantages * ratio
+        pg_losses2 = -advantages * torch.clamp(ratio, 1.0 - self.config.cliprange, 1.0 + self.config.cliprange)
+
+        # 相应地，(5)式中的min，对应这里的torch.max()
+        pg_loss = masked_mean(torch.max(pg_losses, pg_losses2), mask)
+
+        return pg_loss
+```
+
+## 三、GAE
+> $p_\theta(a_t | s_t)$、$p_{\theta^\prime}(a_t | s_t)$我们比较熟悉，但是 $A^{\theta^\prime}(s_t, a_t)$ 怎么计算呢？  
+> 前面提到 $A(s_t, a_t) = Q(s_t, a_t)-V(s_t)$，于是问题可以转化为如何预测 Q、V
+
+## 四、Actor-Critic架构
+> 至此，我们的训练任务划分成两个:
+>    1. 如何采取更好的动作 ----> actor
+>    2. 如何预测 $V(s_t)$ ----> critic
+
+## 五、整体训练框架
