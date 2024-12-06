@@ -158,9 +158,159 @@ class PPOTrainer(BaseTrainer):
 > $p_\theta(a_t | s_t)$、$p_{\theta^\prime}(a_t | s_t)$我们比较熟悉，但是 $A^{\theta^\prime}(s_t, a_t)$ 怎么计算呢？  
 > 前面提到 $A(s_t, a_t) = Q(s_t, a_t)-V(s_t)$，于是问题可以转化为如何预测 Q、V
 
+### 3.1、Q、V之间的关系
+
+![QV.png](../jpgs/QV.jpeg)
+
+### 3.2、$R(s_t, a_t)$的设计
+> 有了 $R(s_t, a_t)$，即上面图示中的 $R_s^a$，再利用公式 $Q_\pi(s,a) = R_s^a + \gamma \sum\limits_{s^{\prime}} p_{ss^\prime}^a V_\pi(s^\prime) $，我们就可以通过 $V_\pi(s)$ 来计算 $Q_\pi(s,a)$  
+> 也就是说，有了 $R(s_t, a_t)$，我们只需要预测 $V_\pi(s)$ 就可以了
+- `trl`中的**PPOTrainer**是这样设计的:
+    |$R(s_1, a_1)$|$R(s_2, a_2)$|...|$R(s_t, a_t)$|...|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|
+    |$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T) + Reward(x,y)$|
+    > 其中，$KL(t) = \log \frac {\pi^{RL}_{\theta^\prime}(a_t|s_t)} {\pi^{SFT}(a_t|s_t)}$，Reward(x,y)为奖励模型预测的回报值  
+    > 这样的话，$\sum\limits_{t=1}^T R(s_t, a_t) = - \beta \log \frac {\pi^{RL}_{\theta^\prime}(y|x)} {\pi^{SFT}(y|x)} + Reward(x,y)$
+
+<details>
+<summary>trl中代码实现</summary>
+    
+```python
+def compute_rewards(
+    self,
+    scores: torch.FloatTensor,
+    logprobs: torch.FloatTensor,
+    ref_logprobs: torch.FloatTensor,
+    masks: torch.LongTensor,
+):
+    """
+    Compute per token rewards from scores and KL-penalty.
+    """
+    rewards, non_score_rewards, kls = [], [], []
+    for score, logprob, ref_logprob, mask in zip(scores, logprobs, ref_logprobs, masks):
+        # compute KL penalty (from difference in logprobs)
+        kl = self._kl_penalty(logprob, ref_logprob)
+        kls.append(kl)
+        non_score_reward = -self.kl_ctl.value * kl
+        non_score_rewards.append(non_score_reward)
+        reward = non_score_reward.clone()
+        last_non_masked_index = mask.nonzero()[-1]
+
+        # reward is preference model score + KL penalty
+        reward[last_non_masked_index] += score
+        rewards.append(reward)
+    return torch.stack(rewards), torch.stack(non_score_rewards), torch.stack(kls)
+
+def _kl_penalty(self, logprob: torch.FloatTensor, ref_logprob: torch.FloatTensor) -> torch.FloatTensor:
+    if self.config.kl_penalty == "kl":
+        return logprob - ref_logprob
+```
+
+</details>
+
+### 3.3、$V_\pi(s)$ 的预测
+
+#### 1) 蒙特卡洛方法(MC)
+
+1. 首先，我们有了$R(s_t, a_t)$的计算方式，对于每个轨迹$\tau$，可以先计算对应的$R_t$
+    |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|---|---|
+    |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
+2. 然后，根据$R_t$，计算每个状态可以得到的回报，记作$G_t$
+    |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|---|---|
+    |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
+    |$G_t$|$R_1 + \gamma G_2$|$R_2 + \gamma G_3$|...|$R_{t} + \gamma G_{t+1}$|...|$R_{T-1} + \gamma G_T$|$R_T$|
+3. 当我们有多个轨迹 $\tau$ 时，对于每个状态s，就可以计算出多个 $G_t$ 值，取平均值，便得到了 $V_t$
+    |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|---|---|
+    |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
+    |$G_t$|$R_1 + \gamma G_2$|$R_2 + \gamma G_3$|...|$R_{t} + \gamma G_{t+1}$|...|$R_{T-1} + \gamma G_T$|$R_T$|
+    |$V(s_t)$|$E(G_1)$|$E(G_2)$|...|$E(G_t)$|...|$E(G_{T-1})$|$E(G_T)$|
+4. 实际计算
+    > 但是我们实际计算的时候，无法一次生成很多$\tau$，使它能够覆盖很多$s_t$，再取求均值  
+    - 实际计算时，参考**随机梯度下降**的做法，我们只需生成一次$\tau$，采用下式进行参数更新:
+        $$
+        V(s_t) \leftarrow V(s_t) + \alpha [G_t-V(s_t)] \qquad (6)
+        $$
+    - 这样 $V(s_t)$ 就会跟 $G_t$ 越来越接近
+
+#### 2) 时序差分(TD)
+- 时序差分中，则是想让 $V(s_t)$ 与 $R_t + \gamma V(s_{t+1})$ 越来越接近，参数更新公式如下:
+    $$
+    V(s_t) \leftarrow V(s_t) + \alpha [ \underbrace{R_t+ \gamma V(s_{t+1})}_{对应(6)式中的G_t} - V(s_t)] \qquad (7)
+    $$
+> 用 更可靠的估计 取代 现有估计
+>   - $V(s_t)$ 是现有估计
+>   - $R_t+ \gamma V(s_{t+1})$ 中多了真实值 $R_t$，是更可靠的估计
+>   - 所以**时序差分**不断用更可靠的估计，来取代现有估计，慢慢接近真实值
+
+#### 3) GAE
+> 如果采用MC来预测 $V(s_t)$, 那么优势函数 $A(s_t, a_t)$ 就对应(6)式中的 $G_t-V(s_t)$  
+> 如果采用TD来预测 $V(s_t)$, 那么优势函数 $A(s_t, a_t)$ 就对应(7)式中的 $R_t + \gamma V(s_{t+1}) - V(s_t)$
+
+- GAE将两者结合起来，计算过程如下:
+    1. 按照TD中的方式，计算$\delta_t = R_t + \gamma V(s_{t+1}) - V(s_t)$
+    2. $A(s_t, a_t) = \sum\limits_{l=0}^{\infty} (\gamma \lambda)^l {\delta}_{t+l}$
+    > 1. $\lambda=0$: $A(s_t, a_t) = R_t + \gamma V(s_{t+1}) - V(s_t)$，等价于TD
+    > 2. $\lambda=1$: $A(s_t, a_t) = \sum\limits_{l=0}^{\infty} \gamma^l R_{t+l} - V(s_t) = (R_t + \gamma R_{t+1} + \gamma^2 R_{t+2} + ...) - V(s_t) = G_t-V(s_t)$，等价于MC
+- 所以**GAE**是通过参数 $\lambda$ 将**MC**和**TD**结合起来，做一个权衡
+- 对照上面的(6)、(7)式，GAE中的参数更新公式可写为:
+    $$
+    \begin{aligned}
+    V(s_t) & \leftarrow V(s_t) + \alpha [A(s_t, a_t)] \\
+    & \leftarrow V(s_t) + \alpha [ \underbrace{A(s_t, a_t)+V(s_t)}_{对应(6)式中的G_t} - V(s_t)]
+    \end{aligned}
+    $$
+- 由上式可知，GAE中，随着参数更新，$V(s_t)$ 与 $\underbrace{A(s_t, a_t)+V(s_t)}$ 越来越接近
+
+<details>
+<summary>trl中代码实现</summary>
+    
+```python
+for t in reversed(range(gen_len)):
+    nextvalues = values[:, t + 1] if t < gen_len - 1 else 0.0
+    delta = rewards[:, t] + self.config.gamma * nextvalues - values[:, t]
+    lastgaelam = delta + self.config.gamma * self.config.lam * lastgaelam
+    advantages_reversed.append(lastgaelam)
+advantages = torch.stack(advantages_reversed[::-1]).transpose(0, 1)
+
+# returns即为期望的预测值
+returns = advantages + values
+```
+
+</details>
+
 ## 四、Actor-Critic架构
 > 至此，我们的训练任务划分成两个:
 >    1. 如何采取更好的动作 ----> actor
 >    2. 如何预测 $V(s_t)$ ----> critic
 
+- 对于一个策略模型 $\pi_{\theta^\prime}$，我们可以生成轨迹 $\tau$，然后计算$R_t$:
+    |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|---|---|
+    |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
+- 然后，引入一个value_model，$V_{\theta^\prime}$来预测每个状态下的$V(s_t)$，就可以计算这些值：
+    |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
+    |---|---|---|---|---|---|---|---|
+    |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
+    |$V(s_t)$|$V_{\theta^\prime}(s_1)$|$V_{\theta^\prime}(s_2)$|...|$V_{\theta^\prime}(s_t)$|...|||
+    |$\delta_t$||||$R_t + \gamma V_{\theta^\prime}(s_{t+1}) - V_{\theta^\prime}(s_t)$||||
+    |$A^{\theta^\prime}(s_t, a_t)$||||$\sum\limits_{l=0}^{\infty} (\gamma \lambda)^l {\delta}_{t+l}$||||
+    |$V(s_t)$ 的期望值||||$A^{\theta^\prime}(s_t, a_t)+V_{\theta^\prime}(s_t)$||||
+
+### 优化目标
+1. actor网络的优化目标，就是前面2.4节的(5)式:
+    $$
+    J_{PPO2}(\theta) \approx \frac 1 N \sum\limits_{(s_t, a_t)} \min \left\{  \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t), clip \left( \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)}, 1-\varepsilon, 1+\varepsilon \right) A^{\theta^\prime}(s_t, a_t) \right\} \quad (5)
+    $$
+2. critic网络的优化目标，是 $V_\theta(s_t)$ 更接近于 $A^{\theta^\prime}(s_t, a_t)+V_{\theta^\prime}(s_t)$，因此损失函数可以写为:
+    $$
+    J(\theta) = \frac 1 N \sum \frac 1 2 \left\{ V_\theta(s_t) - [A^{\theta^\prime}(s_t, a_t)+V_{\theta^\prime}(s_t)] \right\}^2
+    $$
+
 ## 五、整体训练框架
+- 至此，便理清了PPO的训练流程，可以完整地过一遍[参考代码](https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py)，更清洗地认识整个架构
+- 如[参考博客1](https://newfacade.github.io/notes-on-reinforcement-learning/17-ppo-trl.html)中的这张图所示:
+
+    ![ppo.png](../jpgs/ppo.png)
