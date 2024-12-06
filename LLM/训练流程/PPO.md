@@ -310,7 +310,7 @@ returns = advantages + values
     $$
 
 ## 五、整体训练框架
-- 至此，便理清了PPO的训练流程，可以完整地过一遍[参考代码](https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py)，更清洗地认识整个架构
+- 至此，便理清了PPO的训练流程，可以完整地过一遍[参考代码](https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py)，更清晰地认识整个架构
 - 如[参考博客1](https://newfacade.github.io/notes-on-reinforcement-learning/17-ppo-trl.html)中的这张图所示:
 
     ![ppo.png](../jpgs/ppo.png)
