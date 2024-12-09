@@ -304,6 +304,7 @@ returns = advantages + values
     $$
     J_{PPO2}(\theta) \approx \frac 1 N \sum\limits_{(s_t, a_t)} \min \left\{  \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)} A^{\theta^\prime}(s_t, a_t), clip \left( \frac {p_\theta(a_t | s_t)} {p_{\theta^\prime}(a_t | s_t)}, 1-\varepsilon, 1+\varepsilon \right) A^{\theta^\prime}(s_t, a_t) \right\} \quad (5)
     $$
+    > 转化为损失函数时，注意添加负号
 2. critic网络的优化目标，是 $V_\theta(s_t)$ 更接近于 $A^{\theta^\prime}(s_t, a_t)+V_{\theta^\prime}(s_t)$，因此损失函数可以写为:
     $$
     J(\theta) = \frac 1 N \sum \frac 1 2 \left\{ V_\theta(s_t) - [A^{\theta^\prime}(s_t, a_t)+V_{\theta^\prime}(s_t)] \right\}^2
