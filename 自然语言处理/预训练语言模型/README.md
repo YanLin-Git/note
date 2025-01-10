@@ -18,10 +18,11 @@
     11. [x] T5(2019.10) [paper](https://arxiv.org/abs/1910.10683v4)
     12. [ ] UniLM(2019.5) [paper](https://arxiv.org/abs/1905.03197v3)
     13. [ ] XLNet(2019.6) [paper](https://arxiv.org/abs/1906.08237v2)
+    14. [x] ModernBERT(2024.12) [paper](https://arxiv.org/abs/2412.13663)
 
 
 > 参考: https://zhuanlan.zhihu.com/p/254821426  
-> 梳理一下预训练模型的脉络，然后沿着这个脉络(上面的`4-13`)，一步步熟悉每个模型
+> 梳理一下预训练模型的脉络，然后沿着这个脉络(上面的`4-14`)，一步步熟悉每个模型
 
 1. 常见模型结构
     - transformer不同的用法
