@@ -16,18 +16,30 @@ graph LR
     QLoRA[QLoRA]
     g[3 梯度方面]
     ga[gradient accumulate]
-    gc[gradient checkpoint]
+    ac[activate checkpoint]
     paralle[4 并行训练]
-    DP[数据并行]
-    MP[模型并行]
-    OP[优化器并行]
+    DataParalle[数据并行]
+    dp[Data Paralle]
+    ddp[Distributed Data Paralle]
+    ZeRO[ZeRO]
+    ModelParalle[模型并行]
+    Gpipe[流水线并行]
+    Megatron[张量并行]
 
     source --- data & peft & g & paralle
     data --- add & mix & quanti
     peft --- lora & PT
     quanti & lora -.- QLoRA
-    g --- ga & gc
-    paralle --- DP & MP & OP
+    g --- ga & ac
+    paralle --- DataParalle & ModelParalle
+
+    subgraph 数据并行
+        DataParalle --- dp & ddp & ZeRO
+    end
+
+    subgraph 模型并行
+        ModelParalle --- Gpipe & Megatron
+    end
 
 ```
 
@@ -66,20 +78,22 @@ graph LR
 
 1. gradient accumulate
     - 多个batch前向传播，计算loss后，累加在一起，再进行反向传播
-2. gradient checkpoint
+2. active checkpoint
     - 显存占用，激活函数占大头，以`bert-base`为例，model占用2%，optimizer占用10%，激活函数占用87.6%
-    - 解决方式：时间换空间，又称 激活函数重演(rematerialization)
+    - 解决方式：时间换空间，又称 激活函数重演(re-materialization)
 
 </details>
 
 <details>
 <summary><b>四、并行训练</b></summary>
 
-1. [x] 数据并行 (Data Parallelism)
+1. [ ] 数据并行
+    1. [x] DP (Data Parallel)
+    2. [x] DDP (Distributed Data Parallel)
+    3. [ ] [ZeRO](https://arxiv.org/abs/1910.02054v3)
 2. [ ] 模型并行
     1. 简单的模型并行 (分层)
     2. 流水线并行 [Gpipe](https://arxiv.org/abs/1811.06965v5)
     3. 张量并行 [Megatron-LM](https://arxiv.org/abs/1909.08053v4)
-3. [ ] 优化器并行 [ZeRO](https://arxiv.org/abs/1910.02054v3)
 
 </details>
