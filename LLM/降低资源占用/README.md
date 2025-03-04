@@ -18,11 +18,11 @@ graph LR
     ga[gradient accumulate]
     ac[activate checkpoint]
     paralle[4 并行训练]
-    DataParalle[数据并行]
+    DataParalle[4.1 数据并行]
     dp[Data Paralle]
     ddp[Distributed Data Paralle]
     ZeRO[ZeRO]
-    ModelParalle[模型并行]
+    ModelParalle[4.2 模型并行]
     Gpipe[流水线并行]
     Megatron[张量并行]
 
