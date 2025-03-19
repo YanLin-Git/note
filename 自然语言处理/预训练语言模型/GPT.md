@@ -45,4 +45,5 @@
     > 预训练好语言模型之后，在做推理时，只需要将`input`修改为特定格式，经过模型，得到`output`
 
 - 具体做法可以参照论文中这张图片:
+
     ![GPT_3_in_context_learning.jpg](jpgs/GPT_3_in_context_learning.jpg) 
