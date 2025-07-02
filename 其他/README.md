@@ -4,13 +4,14 @@
     3. [linux常用命令](其他/linux.md)
     4. [Milvus](其他/Milvus.md)
         - 处理大规模数据集的向量搜索
-    5. [markdown](其他/markdown.md)
+    5. [docker](其他/docker.md)
+    6. [markdown](其他/markdown.md)
         - 编写文档，标题、注释、表格等
-    6. [LaTex](其他/LaTex.md)
+    7. [LaTex](其他/LaTex.md)
         - 书写一些数学公式、向量、矩阵
-    7. [mermaid](其他/mermaid.md)
+    8. [mermaid](其他/mermaid.md)
         - 画图
-    8. [numpy、pytorch](其他/数据操作.md)
+    9. [numpy、pytorch](其他/数据操作.md)
 2. 零散知识点
     1. [KL散度&交叉熵](其他/KL散度&交叉熵.md)
     2. [MLE&MAP](其他/MLE&MAP.md)
