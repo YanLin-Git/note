@@ -258,7 +258,7 @@ def _kl_penalty(self, logprob: torch.FloatTensor, ref_logprob: torch.FloatTensor
 - 对照上面的(6)、(7)式，GAE中的参数更新公式可写为:
     $$
     \begin{aligned}
-    V(s_t) & \leftarrow V(s_t) + \alpha [A(s_t, a_t)] \\
+    V(s_t) & \leftarrow V(s_t) + \alpha [A(s_t, a_t)] \qquad (8)\\
     & \leftarrow V(s_t) + \alpha [ \underbrace{A(s_t, a_t)+V(s_t)}_{对应(6)式中的G_t} - V(s_t)]
     \end{aligned}
     $$
@@ -281,16 +281,26 @@ returns = advantages + values
 
 </details>
 
-## 四、Actor-Critic架构
-> 至此，我们的训练任务划分成两个:
->    1. 如何采取更好的动作 ----> actor
->    2. 如何预测 $V(s_t)$ ----> critic
+#### 4) 总结
+- 至此，我们训练一个value_model的流程就出来了:
+    1. 使用当前的value_model来预测每个状态下的$V(s_t)$
+    2. 使用GAE的方式，来计算优势函数$A(s_t, a_t)$
+    3. 使用(8)式来进行参数更新，生成新的value_model
+- 有了value_model之后，训练policy_model的流程也能够完成了:
+    1. 使用训练好的value_model来预测每个状态下的$V(s_t)$
+    2. 使用GAE的方式，来计算优势函数$A(s_t, a_t)$
+    3. 使用(5)式来进行参数更新
 
-- 对于一个策略模型 $\pi_{\theta^\prime}$，我们可以生成轨迹 $\tau$，然后计算$R_t$:
+## 四、Actor-Critic架构
+> 于是，我们可以使用Actor-Critic架构来同时训练这两个model
+>    1. 如何采取更好的动作 ----> actor ----> 训练policy_model
+>    2. 如何预测 $V(s_t)$ ----> critic ----> 训练value_model
+
+- 对于一个policy_model $\pi_{\theta^\prime}$，我们可以生成轨迹 $\tau$，然后计算$R_t$:
     |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
     |---|---|---|---|---|---|---|---|
     |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
-- 然后，引入一个value_model，$V_{\theta^\prime}$来预测每个状态下的$V(s_t)$，就可以计算这些值：
+- 然后，使用value_model，$V_{\theta^\prime}$来预测每个状态下的$V(s_t)$，就可以计算这些值：
     |时刻t|1|2|...|t|...|$R(s_{T-1}, a_{T-1})$|$R(s_T, a_T)$|
     |---|---|---|---|---|---|---|---|
     |$R_t$|$- \beta KL(1)$|$- \beta KL(2)$|...|$- \beta KL(t)$|...|$- \beta KL(T-1)$|$- \beta KL(T) + Reward(x,y)$|
