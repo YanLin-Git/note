@@ -23,9 +23,10 @@
 1. 首先对(2)式进一步推导
     $$
     \begin{aligned}
-    & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta D_{KL} [ \pi_{\theta}(y|x) || \pi_{ref}(y|x) ] & (2) \\
-    = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta \sum\limits_{x \sim D, y \sim \pi_{\theta}(y|x)} \pi_{\theta}(y|x) \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{代入KL散度计算公式} \\
-    = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta E_{x \sim D, y \sim \pi_{\theta}(y|x)} \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{转化为期望} \\
+    & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \underbrace{E_{x \sim D}}_{paper中没有，个人觉得应该加上} \beta D_{KL} [ \pi_{\theta}(y|x) || \pi_{ref}(y|x) ] & (2) \\
+    = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \underbrace{E_{x \sim D}}_{paper中没有，个人觉得应该加上} \beta \sum\limits_{y \sim \pi_{\theta}(y|x)} \pi_{\theta}(y|x) \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{代入KL散度计算公式} \\
+    = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta E_{x \sim D} E_{y \sim \pi_{\theta}(y|x)} \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \text{转化为期望} \\
+    = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} [r_{\phi}(x,y)] - \beta E_{x \sim D, y \sim \pi_{\theta}(y|x)} \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} & \\
     = & \max_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} \left[ r_{\phi}(x,y) - \beta \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} \right]  & \text{即 instructGPT论文中的公式} \\
     = & \min_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} \left[ \beta \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} - r_{\phi}(x,y) \right]  & \text{转化为最小化问题} \\
     = & \min_{\pi_{\theta}} \quad E_{x \sim D, y \sim \pi_{\theta}(y|x)} \left[ \log \frac {\pi_{\theta}(y|x)} {\pi_{ref}(y|x)} - \frac 1 \beta r_{\phi}(x,y) \right]  & \\
