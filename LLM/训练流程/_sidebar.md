@@ -12,6 +12,7 @@
         - [2.2、Chinese-LLaMA-Alpaca](LLM/训练流程/Chinese-LLaMA-Alpaca.md)
         - [3.1、PPO](LLM/训练流程/PPO.md)
         - [3.2、DPO](LLM/训练流程/DPO.md)
+        - [3.3、GRPO](LLM/训练流程/GRPO.md)
     - [LLM的应用](LLM/LLM应用/)
 - [多模态](多模态/)
 - [其他](其他/)

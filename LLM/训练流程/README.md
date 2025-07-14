@@ -19,3 +19,4 @@
     - 目前在整理`偏好数据训练`阶段的几个算法
         1. [PPO](LLM/训练流程/PPO.md)
         2. [DPO](LLM/训练流程/DPO.md)
+        3. [GRPO](LLM/训练流程/GRPO.md)
