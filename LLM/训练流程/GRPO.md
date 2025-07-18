@@ -145,9 +145,7 @@ def _compute_loss(self, model, inputs):
     attention_mask = torch.cat([prompt_mask, completion_mask], dim=1)
     logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
 
-    per_token_logps = self._get_per_token_logps_and_entropies(
-        model, input_ids, attention_mask, logits_to_keep
-    )["logps"]
+    per_token_logps = self._get_per_token_logps(model, input_ids, attention_mask, logits_to_keep)
     per_token_logps = per_token_logps*completion_mask
     per_seq_logps = per_token_logps.sum(dim=-1)
 
@@ -161,9 +159,6 @@ def _compute_loss(self, model, inputs):
 
     # Compute the loss
     advantages = inputs["advantages"]
-    # When using num_iterations == 1 and steps_per_generation <= gradient_accumulation_steps
-    # old_per_token_logps == per_token_logps, so we can skip it's computation
-    # (see _generate_and_score_completions) and use per_token_logps.detach() instead.
     old_per_token_logps = (
         per_token_logps.detach() if inputs["old_per_token_logps"] is None else inputs["old_per_token_logps"]
     )
@@ -185,10 +180,6 @@ def _compute_loss(self, model, inputs):
 
     if self.loss_type == "grpo":
         loss = per_seq_loss.mean()
-    # elif self.loss_type == "bnpo":
-    #     loss = (per_token_loss * completion_mask).sum() / completion_mask.sum().clamp(min=1.0)
-    # elif self.loss_type == "dr_grpo":
-    #     loss = (per_token_loss * completion_mask).sum() / (per_token_loss.size(0) * self.max_completion_length)
     else:
         raise ValueError(f"Unknown loss type: {self.loss_type}")
     
