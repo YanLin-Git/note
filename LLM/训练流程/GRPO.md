@@ -185,3 +185,18 @@ def _compute_loss(self, model, inputs):
     
     return loss
 ```
+
+# 三、效果比较
+- 数据集: [gsm8k](https://huggingface.co/datasets/openai/gsm8k)
+- 模型: `Qwen/Qwen3-0.6B`
+- 示例代码: https://www.kaggle.com/code/chenyanlinkaggle/grpo-v1
+- 训练一轮，观察两个版本的reward变化情况，结果如下:
+    ![grpo.png](../jpgs/grpo.jpg)
+
+<details>
+<summary>todo</summary>
+
+- 感觉还是第一版效果好一些，目前找到的开源实现也都是基于这个版本
+- 再翻翻论文，借鉴别人研究成果
+
+</details>
