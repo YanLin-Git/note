@@ -6,6 +6,7 @@
 - [计算机视觉](计算机视觉/)
 - [LLM](LLM/)
     - [降低资源占用](LLM/降低资源占用/)
+    - [推理加速](LLM/推理加速/)
     - [训练流程](LLM/训练流程/)
         - [1、instructGPT](LLM/训练流程/instructGPT.md)
         - [2.1、ChatGLM](LLM/训练流程/ChatGLM.md)
