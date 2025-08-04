@@ -16,6 +16,7 @@
     - [LaTex](其他/LaTex.md)
     - [mermaid](其他/mermaid.md)
     - [数据操作](其他/数据操作.md)
+    - [openvpn](其他/openvpn.md)
     - [KL散度&交叉熵](其他/KL散度&交叉熵.md)
     - [MLE&MAP](其他/MLE&MAP.md)
     - [前缀树](其他/前缀树.md)

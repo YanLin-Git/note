@@ -12,6 +12,9 @@
     8. [mermaid](其他/mermaid.md)
         - 画图
     9. [numpy、pytorch](其他/数据操作.md)
+    10. [openvpn](其他/openvpn.md)
+        - 搭建局域网
+
 2. 零散知识点
     1. [KL散度&交叉熵](其他/KL散度&交叉熵.md)
     2. [MLE&MAP](其他/MLE&MAP.md)

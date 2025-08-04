@@ -25,3 +25,10 @@
 1. 有几个物理CPU `cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l`
 2. 每个CPU中有几个核 `cat /proc/cpuinfo | grep "cpu cores" | uniq`
 3. 有几个逻辑CPU `cat /proc/cpuinfo | grep "processor" | wc -l`
+
+## 6、安装、开启ssh服务
+1. 更新apt `sudo apt update`
+2. 安装ssh `sudo apt install openssh-server`
+3. ssh开机自启 `sudo systemctl enable ssh`
+4. 防火墙开机自启 `sudo ufw enable`
+5. 允许防火墙端口 `sudo ufw allow 22`
