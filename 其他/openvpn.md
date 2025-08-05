@@ -6,7 +6,7 @@
 1. 安装`openvpn`、`easy-rsa`
     - `sudo apt install openvpn easy-rsa`
 
-2. 在`~\easy-rsa\vars`文件中设置环境变量
+2. 在`~/easy-rsa/vars`文件中设置环境变量
     
     <details>
     <summary>示例</summary>
