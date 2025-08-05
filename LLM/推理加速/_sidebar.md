@@ -6,6 +6,7 @@
 - [计算机视觉](计算机视觉/)
 - [LLM](LLM/)
     - [降低资源占用](LLM/降低资源占用/)
+    - [并行训练](LLM/并行训练/)
     - [推理加速](LLM/推理加速/)
         - [1、FlashAttention](LLM/推理加速/FlashAttention.md)
         - [2、PageAttention](LLM/推理加速/PageAttention.md)

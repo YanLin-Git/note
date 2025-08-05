@@ -1,0 +1,145 @@
+# DP&DDP
+
+## 一、DP
+> 简单数据并行(nn.DataParallel)
+
+|阶段|DP|GPU之间的通信|
+|---|---|---|
+|1|各个GPU上执行自己的`前向传播`||
+|2|各个GPU的输出`gather`到主GPU|只需传递输出值，少量通信|
+|3|主GPU上`计算loss`||
+|4|主GPU计算出的loss后，`scatter`到各个GPU|只需传递loss，少量通信|
+|5|各个GPU上执行自己的`反向传播`||
+|6|各个GPU的梯度`reduce`到主GPU|`传递所有参数的梯度`|
+|7|主GPU上`参数更新`||
+|8|主GPU上的参数`broadcast`到各个GPU|`传递所有参数`|
+
+<details>
+<summary>在代码中使用</summary>
+
+```diff
+    model = MyModel()  # 初始化model
+    device = 'cuda:0'
+    model = model.to(device)  # model迁移到GPU
++   # 只需添加这行，参数device_ids=[0,1]`，指定在哪几块GPU上训练
++   model = torch.nn.DataParallel(model, device_ids=[0,1])
+
+    optimizer = torch.optim.Adam(model.parameters())  # 初始化optimizer
+
+    dataloader = DataLoader(train_dataset, batch_size=batch_size)
+    for epoch in range(num_epochs):
+        for x, y_true in dataloader:
+            y_pred = model(x)        # 正向传播
+            l = loss(y_pred, true)   # 计算损失函数            
+            l.backward()             # 反向传播，计算梯度
+            optimizer.step()         # 更新参数
+            optimizer.zero_grad()    # 最后这里记得要将梯度清零
+```
+</details>
+
+- 启动训练: `python train.py`
+
+## 二、DDP
+> 分布式数据并行(nn.DistributedDataParallel)
+
+|阶段|DP|DDP|GPU之间的通信|
+|---|---|---|---|
+|1|各个GPU上执行自己的`前向传播`|各个GPU上执行自己的`前向传播`|
+|2|各个GPU的输出`gather`到主GPU||
+|3|主GPU上`计算loss`|各个GPU上计算自己的`loss`|
+|4|主GPU计算出的loss后，`scatter`到各个GPU||
+|5|各个GPU上执行自己的`反向传播`|各个GPU上执行自己的`反向传播`|
+|6|各个GPU的梯度`reduce`到主GPU|各个GPU的梯度`all-reduce`，保证每个GPU上的梯度是一样的|`传递所有参数的梯度`|
+|7|主GPU上`参数更新`|各个GPU上执行自己的`参数更新`|
+|8|主GPU上的参数`broadcast`到各个GPU||相比DP，不再需要这步，提升效率|
+
+<details>
+<summary>在代码中使用</summary>
+
+```diff
+    # torch.distributed.launch 启动训练的时候，会指定local_rank参数，这里需要解析一下
++   parser = argparse.ArgumentParser()
++   parser.add_argument('--local_rank', type=int)     # 标志这是第几个进程，一个进程使用一块GPU时，这个参数也对应GPU编号
++   args = parser.parse_args()
+
+    # 初始化进程组，指定GPU之间的通信方式为 nccl
++   torch.distributed.init_process_group(backend="nccl", init_method='env://')
+
+    model = MyModel()                    # 初始化model
+-   model = model.to(device)             # model迁移到GPU
++   model = model.to(args.local_rank)    # model迁移到指定GPU
++   # 改用这种方式 封装model
++   model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank])
+
+    optimizer = torch.optim.Adam(model.parameters())  # 初始化optimizer
+
+    # 使用DistributedSampler
+-   dataloader = DataLoader(train_dataset, batch_size=batch_size)
++   train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
++   dataloader = DataLoader(dataset, batch_size=batch_size,  sampler=train_sampler, shuffle=(train_sampler is None), pin_memory=True)
+
+    for epoch in range(num_epochs):
++       train_sampler.set_epoch(epoch)  # 注意这里添加了一行，这样在每个epoch，数据顺序是不同的
+        for x, y_true in dataloader:
+            y_pred = model(x)        # 正向传播
+            l = loss(y_pred, true)   # 计算损失函数            
+            l.backward()             # 反向传播，计算梯度
+            optimizer.step()         # 更新参数
+            optimizer.zero_grad()    # 最后这里记得要将梯度清零
+```
+
+</details>
+
+- 启动训练，`torch.distributed`提供了接口
+    1. 单机多卡: `python -m torch.distributed.launch --nproc_per_node=2 train.py`
+    2. 多机多卡
+        1. `python -m torch.distributed.launch --nnodes=2 --node_rank=0 --nproc_per_node=2 --master_addr="192.168.0.1" --master_port=12333 train.py`
+        2. `python -m torch.distributed.launch --nnodes=2 --node_rank=1 --nproc_per_node=2 --master_addr="192.168.0.1" --master_port=12333 train.py`
+
+
+## 三、accelerate
+> 对`torch.distributed`的轻量封装  
+> 更方便地适应于 CPU、单GPU、多GPU(DDP模式)、TPU等训练环境  
+> 还可支持 混合精度训练
+
+<details>
+<summary>在代码中使用</summary>
+
+```diff
++   from accelerate import Accelerator
+
++   accelerator = Accelerator() # 初始化accelerator
+
+    model = MyModel()  # 初始化model
+-   # 这里不需要再迁移
+-   model = model.to(device)  # model迁移到GPU
+
+    optimizer = torch.optim.Adam(model.parameters())  # 初始化optimizer
+
+    dataloader = DataLoader(train_dataset, batch_size=batch_size)
+
+    # 将model、optimizer、dataloader放在相应设备上
++   model, optimizer, dataloader = accelerator.prepare(model, optimizer, dataloader)
+
+    for epoch in range(num_epochs):
+        for x, y_true in dataloader:
+            y_pred = model(x)        # 正向传播
+            l = loss(y_pred, true)   # 计算损失函数            
+-           l.backward()             # 反向传播，计算梯度
++           accelerator.backward(loss)
+            optimizer.step()         # 更新参数
+            optimizer.zero_grad()    # 最后这里记得要将梯度清零
+```
+
+</details>
+
+
+- 启动训练
+    1. 单机单卡: `python train.py`
+    2. 单机多卡
+        1. 传统方式`python -m torch.distributed.launch --use_env --nproc_per_node=2 train.py`
+            - 这里需要添加`--use_env`
+        2. 使用torchrun `torchrun  --nproc_per_node=2 train.py`
+    3. 多机多卡
+        1. `torchrun --nnodes=2 --node_rank 0 --nproc_per_node 2 --master_addr "192.168.0.1" --master_port=12333 train.py`
+        2. `torchrun --nnodes 2 --node_rank=1 --nproc_per_node 2 --master_addr "192.168.0.1" --master_port=12333 train.py`
