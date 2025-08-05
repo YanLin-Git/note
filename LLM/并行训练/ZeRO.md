@@ -6,6 +6,80 @@
 ## 一、理论介绍
 > 参考: https://zhuanlan.zhihu.com/p/618865052
 
+### 1.1 DDP流程回顾
+1. 每块GPU上加载一个完整的模型
+2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
+3. 几个GPU之间，对梯度做一次**all-reduce**(`reduce-scatter`+`all-gather`)
+4. 每个GPU上执行自己的参数更新
+
+- 整个流程中，每块GPU都保存着完整的`模型参数`、`梯度`、`优化器状态`
+
+<details>
+<summary>示意图</summary>
+
+![ddp.png](../jpgs/ddp.png)
+
+</details>
+
+### 1.2 ZeRO中的改进
+> 为了进一步降低显存占用，将`模型参数`、`梯度`、`优化器状态`都拆分为多份，每块GPU上仅保存自己需要的那份。
+
+- 每块GPU中保存的内容:
+    |stage|模型参数|梯度|优化器状态|
+    |---|---|---|---|
+    |stage1|完整|完整|部分|
+    |stage2|完整|部分|部分|
+    |stage3|部分|部分|部分|
+
+#### 1.2.1 stage1
+1. 每块GPU上加载一个完整的模型
+2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
+3. 几个GPU之间，对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
+    - 梯度的白色部分用不到，我们不用关心。
+4. 对相应的W部分进行参数更新
+5. 对W做一次`all-gather`
+
+<details>
+<summary>stage1示意图</summary>
+
+![ZeRO_1.png](../jpgs/ZeRO_1.png)
+
+</details>
+
+#### 1.2.2 stage2
+
+1. 每块GPU上加载一个完整的模型
+2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
+3. 几个GPU之间，对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
+    - 梯度的白色部分不再使用，释放掉。这里是与stage1的唯一区别
+4. 对相应的W部分进行参数更新
+5. 对W做一次`all-gather`
+
+
+<details>
+<summary>stage2示意图</summary>
+
+![ZeRO_2.png](../jpgs/ZeRO_2.png)
+
+</details>
+
+#### 1.2.3 stage3
+> 每块GPU上不再加载模型所有的参数，仅保存部分参数，只在必要的时候才去读取并完成相应工作
+
+1. 每块GPU上保存部分参数
+2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据
+3. 对W做一次`all-gather`，拿到完整参数后，再forward，然后将不需要维护的那部分W释放
+4. 对W做一次`all-gather`，拿到完整参数后，再backward，然后将不需要维护的那部分W释放
+5. 对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
+    - 梯度的白色部分不再使用，释放掉。
+6. 对自己维护的这部分W进行参数更新
+
+<details>
+<summary>stage3示意图</summary>
+
+![ZeRO_3.png](../jpgs/ZeRO_3.png)
+
+</details>
 
 ## 二、deepspeed
 > 使用教程: https://huggingface.co/docs/transformers/main_classes/deepspeed#nontrainer-deepspeed-integration  
