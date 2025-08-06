@@ -3,7 +3,21 @@
 ## 在docker中部署n8n服务
 1. 安装docker
 2. 创建docker volume `docker volume create n8n_data`
-    > 通过使用卷，数据可以在容器停止或者删除时，仍然保留
+    > 通过使用卷，数据可以在容器停止或者删除时，仍然保留  
+    
+    <details>
+    <summary>创建时，也可以指定主机目录</summary>
+
+    ```shell
+    docker volume create --driver local \
+    --opt type=none \
+    --opt device=/host/path \
+    --opt o=bind \
+    volume_name
+    ```
+
+    </details>
+    
 3. 拉取镜像 `docker pull n8nio/n8n`
 4. 创建并启动容器
     ```shell
