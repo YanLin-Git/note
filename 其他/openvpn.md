@@ -6,7 +6,7 @@
 1. 安装`openvpn`、`easy-rsa`
     - `sudo apt install openvpn easy-rsa`
 
-2. 在`~/easy-rsa/vars`文件中设置环境变量
+2. 在`/usr/share/easy-rsa/vars`文件中设置环境变量
     
     <details>
     <summary>示例</summary>
@@ -23,6 +23,8 @@
     </details>
 
 3. 使用`easy-rsa`生成一些密钥、证书
+    > 在`/usr/share/easy-rsa`目录中执行
+
     ```shell
     # 初始化pki (Public Key Infrastructure)
     sudo ./easyrsa init-pki 
@@ -45,15 +47,15 @@
     ```
 
 4. 使用`openvpn`生成静态密钥文件`ta.key`
-    - `openvpn --genkey --secret pki/ta.key`
+    - `openvpn --genkey --secret /usr/share/easy-rsa/pki/ta.key`
 
 5. 将服务端所需的配置文件copy至`openvpn`的配置目录`/etc/openvpn/server`
     ```shell
-    sudo cp pki/ca.crt /etc/openvpn/server/ca.crt 
-    sudo cp pki/dh.pem /etc/openvpn/server/dh.pem 
-    sudo cp pki/issued/vpn-server.crt /etc/openvpn/server/server.crt
-    sudo cp pki/private/vpn-server.key /etc/openvpn/server/server.key 
-    sudo cp pki/ta.key /etc/openvpn/server/ta.key
+    sudo cp /usr/share/easy-rsa/pki/ca.crt /etc/openvpn/server/ca.crt 
+    sudo cp /usr/share/easy-rsa/pki/dh.pem /etc/openvpn/server/dh.pem 
+    sudo cp /usr/share/easy-rsa/pki/issued/vpn-server.crt /etc/openvpn/server/server.crt
+    sudo cp /usr/share/easy-rsa/pki/private/vpn-server.key /etc/openvpn/server/server.key 
+    sudo cp /usr/share/easy-rsa/pki/ta.key /etc/openvpn/server/ta.key
     ```
 
 6. 在配置目录`/etc/openvpn/server`中，添加一个验证用户名密码的脚本`check.sh`
@@ -358,7 +360,7 @@
     # Note that v2.4 client/server will automatically
     # negotiate AES-256-GCM in TLS mode.
     # See also the ncp-cipher option in the manpage
-    cipher AES-256-CBC
+    cipher AES-256-GCM
 
     # Enable compression on the VPN link and push the
     # option to the client (v2.4+ only, for earlier
@@ -477,7 +479,7 @@ route 10.8.0.0  255.255.255.0 vpn_gateway
 
 # 加密方法和压缩方法
 # 与server.conf中一致
-cipher AES-256-CBC
+cipher AES-256-GCM
 auth SHA1
 ;comp-lzo
 
