@@ -21,6 +21,9 @@ graph LR
 
 ```
 
+> pre: [GPU通信](LLM/并行训练/GPU通信.md)
+>    - 首先了解一下GPU之间的通信方式
+
 1. 数据并行
     1. [DP&DDP](LLM/并行训练/DP&DDP.md)
         - 从`Data Parallel`到`Distributed Data Parallel`
