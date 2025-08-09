@@ -39,7 +39,7 @@ class Trainer:
                         loss = self.compute_loss(model, inputs):
                             outputs = model(**inputs) # 前向传播、计算损失
                         self.accelerator.backward(loss) # 反向传播
-                    nn.utils.clip_grad_norm_() # 梯度裁剪
+                    self.accelerator.clip_grad_norm_(model.parameters(), max_grad_norm) # 梯度裁剪
                     self.optimizer.step() # 参数更新
                     self.lr_scheduler.step() # 学习率更新
                     model.zero_grad() # 梯度清零
@@ -55,15 +55,17 @@ class MyTrainer(Trainer):
     def compute_loss(self, model: BertModel, inputs: Dict[str, torch.Tensor], return_outputs=False,):
 
         # 读取数据
-        text1_input_ids = inputs['text1_input_ids']
-        text1_attn_masks = inputs['text1_attn_masks']
-        text2_input_ids = inputs['text2_input_ids']
-        text2_attn_masks = inputs['text2_attn_masks']
+        source_input_ids = inputs['text1_input_ids']
+        source_attention_mask = inputs['text1_attn_masks']
+        target_input_ids = inputs['text2_input_ids']
+        target_attention_mask = inputs['text2_attn_masks']
         labels = inputs['labels']
 
         # 正向传播
         # 输入两句话，计算它们的相似度
-        y_preds = model(text1_input_ids, text1_attn_masks, text2_input_ids, text2_attn_masks)
+        source_embeddings = model.get_sentence_embeddings(source_input_ids, source_attention_mask)
+        target_embeddings = model.get_sentence_embeddings(target_input_ids, target_attention_mask)
+        y_preds = nn.functional.cosine_similarity(source_embeddings, target_embeddings)
 
         # 计算损失
         loss = self.loss_fun(y_preds, labels) 
@@ -74,8 +76,6 @@ class MyTrainer(Trainer):
 ## 5、huggingface中的Trainer更多功能
 ```python
 class Trainer:
-    def __init__(): # 一些初始化准备工作
-        self._move_model_to_device(model, args.device) # 将模型放在相应设备
     def train():
         self._load_from_checkpoint(resume_from_checkpoint) # 加载之前已经训练的checkpoint
         self._inner_training_loop(): # 真正开始训练
