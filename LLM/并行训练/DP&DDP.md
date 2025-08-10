@@ -29,8 +29,9 @@
     dataloader = DataLoader(train_dataset, batch_size=batch_size)
     for epoch in range(num_epochs):
         for x, y_true in dataloader:
+            x, y_true = x.to(device), y_true.to(device)
             y_pred = model(x)        # 正向传播
-            l = loss(y_pred, true)   # 计算损失函数            
+            l = loss(y_pred, y_true)   # 计算损失函数            
             l.backward()             # 反向传播，计算梯度
             optimizer.step()         # 更新参数
             optimizer.zero_grad()    # 最后这里记得要将梯度清零
@@ -38,6 +39,7 @@
 </details>
 
 - 启动训练: `python train.py`
+- 完整示例: https://www.kaggle.com/code/chenyanlinkaggle/dataparallel
 
 ## 二、DDP
 > 分布式数据并行(nn.DistributedDataParallel)
@@ -59,13 +61,14 @@
 ```diff
     # torch.distributed.launch 启动训练的时候，会指定local_rank参数，这里需要解析一下
 +   parser = argparse.ArgumentParser()
-+   parser.add_argument('--local_rank', type=int)     # 标志这是第几个进程，一个进程使用一块GPU时，这个参数也对应GPU编号
++   parser.add_argument('--local-rank', type=int)     # 标志这是第几个进程，一个进程使用一块GPU时，这个参数也对应GPU编号
 +   args = parser.parse_args()
 
     # 初始化进程组，指定GPU之间的通信方式为 nccl
 +   torch.distributed.init_process_group(backend="nccl", init_method='env://')
 
     model = MyModel()                    # 初始化model
+-   device = 'cuda:0'
 -   model = model.to(device)             # model迁移到GPU
 +   model = model.to(args.local_rank)    # model迁移到指定GPU
 +   # 改用这种方式 封装model
@@ -73,7 +76,8 @@
 
     optimizer = torch.optim.Adam(model.parameters())  # 初始化optimizer
 
-    # 使用DistributedSampler
+    # 由于采用了多进程，需要保证不同进程拿到的是不同的数据
+    # 所以需要对数据的分配进行调整，使用了DistributedSampler
 -   dataloader = DataLoader(train_dataset, batch_size=batch_size)
 +   train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
 +   dataloader = DataLoader(dataset, batch_size=batch_size,  sampler=train_sampler, shuffle=(train_sampler is None), pin_memory=True)
@@ -81,8 +85,9 @@
     for epoch in range(num_epochs):
 +       train_sampler.set_epoch(epoch)  # 注意这里添加了一行，这样在每个epoch，数据顺序是不同的
         for x, y_true in dataloader:
+            x, y_true = x.to(args.local_rank), y_true.to(args.local_rank)
             y_pred = model(x)        # 正向传播
-            l = loss(y_pred, true)   # 计算损失函数            
+            l = loss(y_pred, y_true)   # 计算损失函数            
             l.backward()             # 反向传播，计算梯度
             optimizer.step()         # 更新参数
             optimizer.zero_grad()    # 最后这里记得要将梯度清零
@@ -95,7 +100,7 @@
     2. 多机多卡
         1. `python -m torch.distributed.launch --nnodes=2 --node_rank=0 --nproc_per_node=2 --master_addr="192.168.0.1" --master_port=12333 train.py`
         2. `python -m torch.distributed.launch --nnodes=2 --node_rank=1 --nproc_per_node=2 --master_addr="192.168.0.1" --master_port=12333 train.py`
-
+- 完整示例: https://www.kaggle.com/code/chenyanlinkaggle/distributeddataparallel
 
 ## 三、accelerate
 > 对`torch.distributed`的轻量封装  

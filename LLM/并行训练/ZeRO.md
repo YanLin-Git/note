@@ -92,7 +92,6 @@
     # 解析参数
 +   parser = argparse.ArgumentParser()
 +   parser.add_argument('--deepspeed', type=str)     # deepspeed的配置文件
-+   parser.add_argument('--local_rank', default=0, type=int) # deepspeed命令启动时，会指定local_rank参数
 +   args = parser.parse_args()
 
     # 解析配置文件
