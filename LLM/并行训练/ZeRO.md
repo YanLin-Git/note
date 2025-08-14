@@ -10,76 +10,112 @@
 1. 每块GPU上加载一个完整的模型
 2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
 3. 几个GPU之间，对梯度做一次**all-reduce**(`reduce-scatter`+`all-gather`)
+
+    <details>
+    <summary>示意图</summary>
+
+    ![ddp.png](../jpgs/ddp.png)
+
+    </details>
+
 4. 每个GPU上执行自己的参数更新
 
-- 整个流程中，每块GPU都保存着完整的`模型参数`、`梯度`、`优化器状态`
+> 整个流程中，每块GPU都保存着完整的`模型参数`、`梯度`、`优化器状态`
+
+
+
+### 1.2 ZeRO
+
+- 为了进一步降低显存占用，将`模型参数`、`梯度`、`优化器状态`都拆分为多份，每块GPU上仅保存自己需要的那份。
 
 <details>
-<summary>示意图</summary>
+<summary>例如模型有12层，拆分为3份，示意图</summary>
 
-![ddp.png](../jpgs/ddp.png)
+![ZeRO_split.png](../jpgs/ZeRO_split.png)
+
+> - $W_1、G_1、O_1$ 对应模型的`0-3`层
+> - $W_2、G_2、O_2$ 对应模型的`4-7`层
+> - $W_3、G_3、O_3$ 对应模型的`8-12`层
 
 </details>
-
-### 1.2 ZeRO中的改进
-> 为了进一步降低显存占用，将`模型参数`、`梯度`、`优化器状态`都拆分为多份，每块GPU上仅保存自己需要的那份。
-
-- 每块GPU中保存的内容:
-    |stage|模型参数|梯度|优化器状态|
-    |---|---|---|---|
-    |stage1|完整|完整|部分|
-    |stage2|完整|部分|部分|
-    |stage3|部分|部分|部分|
 
 #### 1.2.1 stage1
 1. 每块GPU上加载一个完整的模型
-2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
-3. 几个GPU之间，对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
-    - 梯度的白色部分用不到，我们不用关心。
-4. 对相应的W部分进行参数更新
-5. 对W做一次`all-gather`
+2. 每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
+3. 几个GPU之间，对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`
 
-<details>
-<summary>stage1示意图</summary>
+    <details>
+    <summary>示意图</summary>
 
-![ZeRO_1.png](../jpgs/ZeRO_1.png)
+    ![ZeRO_1.png](../jpgs/ZeRO_1.png)
 
-</details>
+    </details>
+
+4. 每个GPU上只有一部分`O`，经过上一步获取对应的`G`后，就可以对相应的`W`进行参数更新
+5. 对`W`做一次`all-gather`
 
 #### 1.2.2 stage2
 
 1. 每块GPU上加载一个完整的模型
-2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据后，做自己的forward、backward，并计算自己的梯度
-3. 几个GPU之间，对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
-    - 梯度的白色部分不再使用，释放掉。这里是与stage1的唯一区别
-4. 对相应的W部分进行参数更新
-5. 对W做一次`all-gather`
+2. 每块GPU拿到一份数据后，做自己的forward
+3. backward
+    1. `8-11`层，backward，对`G3`做一次`reduce`，然后**GPU0**、**GPU1**就可以将`G3`部分释放掉
+        <details>
+        <summary>示意图</summary>
 
+        ![ZeRO_2_1.png](../jpgs/ZeRO_2_1.png)
 
-<details>
-<summary>stage2示意图</summary>
+        </details>
+    2. `4-7`层，backward，对`G2`做一次`reduce`，然后**GPU0**、**GPU2**就可以将`G2`部分释放掉
+        <details>
+        <summary>示意图</summary>
 
-![ZeRO_2.png](../jpgs/ZeRO_2.png)
+        ![ZeRO_2_2.png](../jpgs/ZeRO_2_2.png)
 
-</details>
+        </details>
+    3. `0-3`层，backward，对`G1`做一次`reduce`，然后**GPU1**、**GPU2**就可以将`G1`部分释放掉
+        <details>
+        <summary>示意图</summary>
+
+        ![ZeRO_2_3.png](../jpgs/ZeRO_2_3.png)
+
+        </details>
+4. 每个GPU上只有一部分`O`、`G`，对相应的`W`进行参数更新
+5. 对`W`做一次`all-gather`
 
 #### 1.2.3 stage3
 > 每块GPU上不再加载模型所有的参数，仅保存部分参数，只在必要的时候才去读取并完成相应工作
 
 1. 每块GPU上保存部分参数
-2. 假设我们有3卡，将一个batch的数据分成3份，每块GPU拿到一份数据
-3. 对W做一次`all-gather`，拿到完整参数后，再forward，然后将不需要维护的那部分W释放
-4. 对W做一次`all-gather`，拿到完整参数后，再backward，然后将不需要维护的那部分W释放
-5. 对梯度做一次`reduce-scatter`，每个GPU上能获取到一部分`完整梯度`，对应下图中梯度的绿色部分
-    - 梯度的白色部分不再使用，释放掉。
-6. 对自己维护的这部分W进行参数更新
+2. forward
+    1. 对`W1`做一次`broadcast`，`0-3`层进行forward，然后GPU将不需要自己维护的`W1`释放
+        <details>
+        <summary>示意图</summary>
 
-<details>
-<summary>stage3示意图</summary>
+        ![ZeRO_3_1.png](../jpgs/ZeRO_3_1.png)
 
-![ZeRO_3.png](../jpgs/ZeRO_3.png)
+        </details>
+    2. 对`W2`做一次`broadcast`，`4-7`层进行forward，然后GPU将不需要自己维护的`W2`释放
+    3. 对`W3`做一次`broadcast`，`8-11`层进行forward，然后GPU将不需要自己维护的`W3`释放
+3. backward
+    1. 对`W3`做一次`broadcast`，`8-11`层进行backward，然后对`G3`做一次`reduce`，最后释放不需要的资源
+        <details>
+        <summary>示意图</summary>
 
-</details>
+        ![ZeRO_3_2.png](../jpgs/ZeRO_3_2.png)
+
+        </details>
+    2. 对`W2`做一次`broadcast`，`4-7`层进行backward，然后对`G2`做一次`reduce`，最后释放不需要的资源
+    3. 对`W1`做一次`broadcast`，`0-3`层进行backward，然后对`G1`做一次`reduce`，最后释放不需要的资源
+4. 每个GPU上只有一部分`O`、`G`、`W`，对自己维护的这部分`W`进行参数更新
+5. ~~对`W`做一次`all-gather`~~，这里不再需要任何操作
+
+### 1.3 `ZeRO_3`的动态演示:
+
+<video controls width="800">
+  <source src="https://www.microsoft.com/en-us/research/wp-content/uploads/2020/02/Turing-Animation.mp4?_=1" type="video/mp4">
+  ZeRO_3.mp4
+</video>
 
 ## 二、deepspeed
 > 使用教程: https://huggingface.co/docs/transformers/main_classes/deepspeed#nontrainer-deepspeed-integration  
